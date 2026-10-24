@@ -39,7 +39,7 @@ Build mode: fast
   Learner check: Enter your Resend account email, click the magic link in your inbox, tick one item, press "Send today's reminder now", open the email, and click Continue — you should land back on the same dashboard.
   Commit: `Add magic-link sign-in and reminder emails`
 
-- [ ] **4. Submit, follow up, and see all your applications**
+- [x] **4. Submit, follow up, and see all your applications**
   Becomes usable: "Mark as submitted" stops reminders and offers a one-time follow-up (default 14 days); `/applications` lists everything under your email; `/api/cron/daily` sends due daily reminders and follow-ups, at most once per day each.
   Why now: Closes the loop the PRD promises after the core email works; the cron route reuses slice 3's builder.
   PRD ref: `prd.md > Submit and follow-up`, `prd.md > My applications`, `prd.md > Daily reminders`
@@ -99,3 +99,5 @@ Activity mode:
 - Checklist ticks stay authorised by the private dashboard link only, not also by the owning session as `spec.md > Item + application updates` said — email links are meant to work on any device without signing in, and requiring a session there would break that; the masked email on the page limits what a link-holder learns.
 - Added `proxy.ts` (Next 16's renamed middleware) to refresh the Supabase session cookie on `/a/*` and `/applications`, which `@supabase/ssr` requires but the spec didn't list.
 - Remind-now doesn't stamp `last_reminder_at`, so a demo send never suppresses that day's real cron reminder.
+- Daily reminders also stop once an application's deadline has passed (cron filter `deadline >= today`) — the PRD only said they stop on submit, but reminding about a closed application is noise.
+- `/a/[id]` and `/applications` call `connection()` before using today's date — Next 16 Cache Components flagged `Date.now()` during prerender.
