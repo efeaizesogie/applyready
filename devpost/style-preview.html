@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-palette="oxblood">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ApplyReady Style Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+  /* D · Charcoal & Oxblood — learner's picks: dark #212227, light #F1EDE5, accent #601E1D.
+     #601E1D is ~1.3:1 on #212227, so dark mode uses a lifted tint of the same hue (#D9706B, ~4.9:1). */
+  :root[data-palette="oxblood"][data-theme="dark"] {
+    --bg: #212227; --surface: #2a2b31; --raised: #33343b; --border: #3d3e46; --grid: rgba(255,255,255,.035);
+    --text: #f3f1ec; --muted: #a9a8b0; --faint: #74737c;
+    --accent: #d9706b; --accent-text: #212227; --accent-soft: rgba(217,112,107,.13);
+    --crit: #ff6b6b; --imp: #f5b942; --nice: #a9a8b0; --ok: #5fd08e;
+  }
+  :root[data-palette="oxblood"][data-theme="light"] {
+    --bg: #f1ede5; --surface: #fbf9f5; --raised: #e8e3d9; --border: #ddd6ca; --grid: rgba(33,34,39,.05);
+    --text: #212227; --muted: #6a655e; --faint: #9c968c;
+    --accent: #601e1d; --accent-text: #f1ede5; --accent-soft: rgba(96,30,29,.08);
+    --crit: #d03b3b; --imp: #a6680c; --nice: #6a655e; --ok: #2f7d4f;
+  }
+  /* A · Ink & Ember — neutral near-black, crisp white, bright ember accent */
+  :root[data-palette="ember"][data-theme="dark"] {
+    --bg: #0a0a0b; --surface: #131315; --raised: #1c1c1f; --border: #2a2a2e; --grid: rgba(255,255,255,.03);
+    --text: #f5f5f4; --muted: #a1a1aa; --faint: #6b6b74;
+    --accent: #ff7a45; --accent-text: #0a0a0b; --accent-soft: rgba(255,122,69,.12);
+    --crit: #f87171; --imp: #fbbf24; --nice: #a1a1aa; --ok: #4ade80;
+  }
+  :root[data-palette="ember"][data-theme="light"] {
+    --bg: #fafaf9; --surface: #ffffff; --raised: #f4f4f3; --border: #e4e4e2; --grid: rgba(0,0,0,.04);
+    --text: #0c0c0d; --muted: #5b5b63; --faint: #94949c;
+    --accent: #e8571c; --accent-text: #ffffff; --accent-soft: rgba(232,87,28,.08);
+    --crit: #dc2626; --imp: #b45309; --nice: #71717a; --ok: #15803d;
+  }
+  /* B · Navy & Flame — deep navy with vivid orange (closest to the Kariiya reference) */
+  :root[data-palette="navy"][data-theme="dark"] {
+    --bg: #070d18; --surface: #0e1726; --raised: #152034; --border: #22304a; --grid: rgba(255,255,255,.03);
+    --text: #f1f5fb; --muted: #9aa8bf; --faint: #5f6f8a;
+    --accent: #ff6b1a; --accent-text: #ffffff; --accent-soft: rgba(255,107,26,.13);
+    --crit: #ff6b6b; --imp: #fbbf24; --nice: #9aa8bf; --ok: #34d399;
+  }
+  :root[data-palette="navy"][data-theme="light"] {
+    --bg: #f6f7f9; --surface: #ffffff; --raised: #eef1f5; --border: #dde3eb; --grid: rgba(14,35,56,.05);
+    --text: #0e2338; --muted: #52637a; --faint: #8e9bb0;
+    --accent: #f05a0e; --accent-text: #ffffff; --accent-soft: rgba(240,90,14,.08);
+    --crit: #dc2626; --imp: #b45309; --nice: #64748b; --ok: #047857;
+  }
+  /* C · Graphite & Indigo — Linear-like monochrome with a cool indigo accent */
+  :root[data-palette="indigo"][data-theme="dark"] {
+    --bg: #08090a; --surface: #111214; --raised: #191a1d; --border: #26282d; --grid: rgba(255,255,255,.03);
+    --text: #f7f8f8; --muted: #9a9ea6; --faint: #62666d;
+    --accent: #7c82ff; --accent-text: #08090a; --accent-soft: rgba(124,130,255,.13);
+    --crit: #f87171; --imp: #fbbf24; --nice: #9a9ea6; --ok: #4ade80;
+  }
+  :root[data-palette="indigo"][data-theme="light"] {
+    --bg: #fbfbfc; --surface: #ffffff; --raised: #f3f3f6; --border: #e3e4ea; --grid: rgba(0,0,0,.04);
+    --text: #0b0c0f; --muted: #575b66; --faint: #9196a1;
+    --accent: #5157e8; --accent-text: #ffffff; --accent-soft: rgba(81,87,232,.08);
+    --crit: #dc2626; --imp: #b45309; --nice: #6b7280; --ok: #15803d;
+  }
+  .switcher { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 10; display: flex; gap: 4px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 4px; box-shadow: 0 8px 30px rgba(0,0,0,.25); }
+  .switcher button { font: inherit; font-size: 13px; border: 0; background: transparent; color: var(--muted); padding: 6px 12px;
+    border-radius: 999px; cursor: pointer; display: flex; gap: 6px; align-items: center; white-space: nowrap; }
+  .switcher button[aria-pressed="true"] { background: var(--raised); color: var(--text); }
+  .switcher i { width: 10px; height: 10px; border-radius: 50%; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.6 Inter, ui-sans-serif, system-ui, sans-serif; font-feature-settings: "cv01", "ss03";
+    -webkit-font-smoothing: antialiased; transition: background .2s, color .2s; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; }
+
+  /* nav */
+  nav { border-bottom: 1px solid var(--border); }
+  nav .wrap { display: flex; align-items: center; height: 60px; gap: 24px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 16px; letter-spacing: -0.01em; }
+  .logo i { width: 22px; height: 22px; border-radius: 6px; background: var(--accent); display: grid; place-items: center; }
+  .logo i::after { content: ""; width: 9px; height: 5px; border-left: 2px solid var(--accent-text); border-bottom: 2px solid var(--accent-text); transform: rotate(-45deg) translate(1px,-1px); }
+  .links { display: flex; gap: 4px; margin-left: auto; }
+  .links a { color: var(--muted); text-decoration: none; font-size: 13px; padding: 6px 10px; border-radius: 6px; }
+  .links a:hover { color: var(--text); }
+  .icon-btn { font: inherit; font-size: 13px; background: transparent; color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+
+  /* hero */
+  .hero { position: relative; padding: 88px 0 0; text-align: center; overflow: hidden;
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 64px 64px; }
+  .badge { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 999px;
+    background: var(--surface); padding: 3px 12px 3px 3px; font-size: 13px; color: var(--muted); gap: 10px; }
+  .badge b { background: var(--accent); color: var(--accent-text); font-weight: 500; border-radius: 999px; padding: 2px 10px; font-size: 12px; }
+  h1 { font-size: clamp(40px, 7vw, 68px); line-height: 1.02; letter-spacing: -0.03em; font-weight: 600; margin: 24px auto 18px; max-width: 860px; }
+  h1 em { font-style: normal; color: var(--accent); white-space: nowrap; }
+  .sub { color: var(--muted); font-size: 18px; max-width: 580px; margin: 0 auto 32px; line-height: 1.55; }
+  .paste { max-width: 640px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 8px;
+    text-align: left; box-shadow: 0 12px 40px rgba(0,0,0,.18); }
+  .paste textarea { width: 100%; min-height: 68px; resize: none; border: 0; outline: 0; background: transparent; color: var(--text);
+    font: inherit; font-size: 15px; padding: 10px 12px; }
+  .paste textarea::placeholder { color: var(--faint); }
+  .paste-bar { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 0 12px; }
+  .hint { font-size: 12px; color: var(--faint); }
+  .btn { font: inherit; font-weight: 500; font-size: 14px; border-radius: 6px; padding: 9px 16px; cursor: pointer; border: 0; }
+  .btn-primary { background: var(--accent); color: var(--accent-text); }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .steps-row { display: flex; justify-content: center; gap: 28px; margin: 28px 0 56px; color: var(--muted); font-size: 13px; flex-wrap: wrap; }
+  .steps-row span b { color: var(--text); font-weight: 500; }
+
+  /* floating stat cards (Kariiya-style) */
+  .float { position: absolute; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+    width: 190px; text-align: left; font-size: 13px; }
+  .float .big { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+  .float.l { left: 4%; top: 150px; transform: rotate(-4deg); }
+  .float.r { right: 4%; top: 260px; transform: rotate(3deg); }
+  @media (max-width: 1100px) { .float { display: none; } }
+
+  /* app frame */
+  .frame { max-width: 1080px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); border-bottom: 0;
+    border-radius: 14px 14px 0 0; padding: 10px 10px 0; }
+  .app { background: var(--bg); border: 1px solid var(--border); border-bottom: 0; border-radius: 10px 10px 0 0;
+    display: grid; grid-template-columns: 210px 1fr; text-align: left; min-height: 560px; }
+  @media (max-width: 760px) { .app { grid-template-columns: 1fr; } .side { display: none; } }
+  .side { border-right: 1px solid var(--border); padding: 14px 10px; font-size: 13px; }
+  .side h6 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); font-weight: 500; margin: 16px 8px 6px; }
+  .side a { display: flex; justify-content: space-between; padding: 6px 8px; border-radius: 6px; color: var(--muted); text-decoration: none; }
+  .side a.on { background: var(--raised); color: var(--text); }
+  .side a small { color: var(--faint); }
+  .main { padding: 22px 24px; }
+  .crumbs { font-size: 12px; color: var(--faint); margin-bottom: 10px; }
+  .head { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+  .head h2 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+  .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .chip { font-size: 12px; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 10px; }
+  .count { text-align: right; }
+  .count .d { font-size: 34px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+  .count .d span { color: var(--accent); }
+  .count small { color: var(--muted); font-size: 12px; }
+  .bar { height: 4px; background: var(--raised); border-radius: 999px; margin: 18px 0 6px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width .3s; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+
+  .cols { display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; margin-top: 20px; }
+  @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+  .panel-h { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border);
+    font-size: 13px; font-weight: 500; }
+  .panel-h span { color: var(--faint); font-weight: 400; }
+  .item { display: grid; grid-template-columns: 20px 1fr auto; gap: 10px; align-items: start; padding: 11px 16px; border-top: 1px solid var(--border); cursor: pointer; }
+  .item:first-of-type { border-top: 0; }
+  .item:hover { background: var(--accent-soft); }
+  .box { width: 16px; height: 16px; border: 1.5px solid var(--faint); border-radius: 4px; margin-top: 3px; display: grid; place-items: center; }
+  .item.done .box { background: var(--accent); border-color: var(--accent); }
+  .item.done .box::after { content: ""; width: 7px; height: 4px; border-left: 2px solid var(--accent-text); border-bottom: 2px solid var(--accent-text); transform: rotate(-45deg) translate(1px,-1px); }
+  .item.done .t { color: var(--faint); text-decoration: line-through; }
+  .t { font-size: 14px; }
+  .by { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .by.late { color: var(--crit); }
+  .tag { font-size: 11px; border-radius: 4px; padding: 1px 7px; border: 1px solid; white-space: nowrap; }
+  .c { color: var(--crit); border-color: color-mix(in srgb, var(--crit) 50%, transparent); }
+  .i { color: var(--imp); border-color: color-mix(in srgb, var(--imp) 50%, transparent); }
+  .n { color: var(--nice); border-color: color-mix(in srgb, var(--nice) 50%, transparent); }
+  .guide { padding: 12px 16px; border-top: 1px solid var(--border); font-size: 13px; }
+  .guide:first-of-type { border-top: 0; }
+  .guide b { font-weight: 500; display: block; margin-bottom: 4px; font-size: 14px; }
+  .guide ul { margin: 0; padding-left: 16px; color: var(--muted); }
+  .remind { padding: 14px 16px; font-size: 13px; color: var(--muted); }
+  .remind input { width: 100%; font: inherit; font-size: 14px; color: var(--text); background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 9px 12px; margin: 8px 0; outline: 0; }
+  .remind input:focus { border-color: var(--muted); }
+  .remind .row { display: flex; gap: 8px; }
+  .remind .row .btn { flex: 1; }
+  .ok { color: var(--ok); }
+
+  .note { text-align: center; color: var(--faint); font-size: 12px; padding: 28px 16px 40px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+  <nav>
+    <div class="wrap">
+      <div class="logo"><i></i>ApplyReady</div>
+      <div class="links"><a href="#">How it works</a><a href="#">My applications</a></div>
+      <button class="icon-btn" id="theme" type="button">☀ Light</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="float l"><div class="muted">Checklist items planned</div><div class="big">14</div><div style="color:var(--muted)">backward from the deadline</div></div>
+    <div class="float r"><div class="muted">Next reminder</div><div class="big">8:00 am</div><div style="color:var(--muted)">3 items still to do</div></div>
+
+    <div class="wrap">
+      <span class="badge"><b>For applicants</b>Scholarships · Jobs · Admissions · Grants</span>
+      <h1>Every application, <em>shortlist-ready</em>.</h1>
+      <p class="sub">Paste an announcement. ApplyReady pulls out every requirement, plans it back from the deadline, and emails you each day until you've submitted.</p>
+
+      <div class="paste">
+        <textarea placeholder="Paste a link or the full announcement text…"></textarea>
+        <div class="paste-bar">
+          <span class="hint">Works with scholarship, job, admission and grant posts</span>
+          <button class="btn btn-primary" type="button">Scan →</button>
+        </div>
+      </div>
+
+      <div class="steps-row">
+        <span><b>1</b> · Paste the announcement</span>
+        <span><b>2</b> · Get a ranked, dated checklist</span>
+        <span><b>3</b> · Daily reminders until you submit</span>
+      </div>
+    </div>
+
+    <div class="frame">
+      <div class="app">
+        <aside class="side">
+          <h6>My applications</h6>
+          <a class="on" href="#">Global Futures Scholarship <small>12d</small></a>
+          <a href="#">Junior Frontend Engineer <small>5d</small></a>
+          <a href="#">MSc Data Science Admission <small>31d</small></a>
+          <a href="#">Community Grant 2026 <small>✓</small></a>
+          <h6>Status</h6>
+          <a href="#">In progress <small>3</small></a>
+          <a href="#">Submitted <small>1</small></a>
+        </aside>
+
+        <div class="main">
+          <div class="crumbs">My applications / <span class="mono">APP-004</span></div>
+          <div class="head">
+            <div>
+              <h2>Global Futures Scholarship</h2>
+              <div class="meta"><span class="chip">Scholarship · Masters</span><span class="chip">Deadline Nov 5, 2026</span><span class="chip">Fully funded</span></div>
+            </div>
+            <div class="count"><div class="d"><span>12</span> days</div><small>until deadline</small></div>
+          </div>
+          <div class="bar"><i id="prog"></i></div>
+          <div class="bar-label"><span id="progtxt"></span><span>1 overdue</span></div>
+
+          <div class="cols">
+            <div class="panel">
+              <div class="panel-h">Checklist <span>ranked by importance · click to tick</span></div>
+              <div id="list"></div>
+            </div>
+            <div style="display:grid; gap:14px; align-content:start">
+              <div class="panel">
+                <div class="panel-h">Writing guidance</div>
+                <div class="guide"><b>Statement of purpose · 1,000 words</b><ul><li>Open with the problem you want to solve back home</li><li>Tie past study to the programme's 3 stated priorities</li><li>End with a concrete 5-year plan</li></ul></div>
+                <div class="guide"><b>CV · 2 pages max</b><ul><li>Lead with leadership and community impact</li><li>Quantify outcomes</li></ul></div>
+              </div>
+              <div class="panel">
+                <div class="panel-h">Daily reminders</div>
+                <div class="remind">
+                  Get one email a day listing what's left, with a link back here.
+                  <input type="email" placeholder="you@example.com">
+                  <div class="row"><button class="btn btn-primary" type="button">Send magic link</button><button class="btn btn-ghost" type="button">Send today's now</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="note" style="padding-bottom:90px">Static style preview: sample data, not wired up. Click checklist items, the theme toggle, and the palette switcher below.</div>
+
+  <div class="switcher" role="group" aria-label="Palette">
+    <button data-p="oxblood" aria-pressed="true"><i style="background:#601e1d; box-shadow: inset 0 0 0 2px #d9706b"></i>D · Yours</button>
+    <button data-p="ember" aria-pressed="false"><i style="background:#ff7a45"></i>A · Ink &amp; Ember</button>
+    <button data-p="navy" aria-pressed="false"><i style="background:#ff6b1a; box-shadow: inset 0 0 0 3px #0e2338"></i>B · Navy &amp; Flame</button>
+    <button data-p="indigo" aria-pressed="false"><i style="background:#7c82ff"></i>C · Graphite &amp; Indigo</button>
+  </div>
+
+<script>
+  const items = [
+    { t: "Draft statement of purpose", by: "Best by Oct 22 · 2 days overdue", late: true, lvl: "c" },
+    { t: "Request official transcript", by: "Best by Oct 27", lvl: "c" },
+    { t: "Two academic reference letters", by: "Best by Oct 29", lvl: "c" },
+    { t: "Tailor CV to the 3 key criteria", by: "Best by Oct 31", lvl: "i", done: true },
+    { t: "Proof of English proficiency", by: "Best by Nov 1", lvl: "i" },
+    { t: "Copy of passport data page", by: "Best by Nov 2", lvl: "n", done: true },
+    { t: "Final review & submit", by: "Best by Nov 4", lvl: "i" }
+  ];
+  const label = { c: "Critical", i: "Important", n: "Nice to have" };
+  const list = document.getElementById('list');
+  function render() {
+    list.innerHTML = '';
+    items.forEach((it, idx) => {
+      const el = document.createElement('div');
+      el.className = 'item' + (it.done ? ' done' : '');
+      el.innerHTML = `<span class="box"></span><div><div class="t">${it.t}</div><div class="by ${it.late && !it.done ? 'late' : ''}">${it.by}</div></div><span class="tag ${it.lvl}">${label[it.lvl]}</span>`;
+      el.addEventListener('click', () => { it.done = !it.done; render(); });
+      list.appendChild(el);
+    });
+    const d = items.filter(i => i.done).length;
+    document.getElementById('prog').style.width = (d / items.length * 100) + '%';
+    document.getElementById('progtxt').textContent = `${d} of ${items.length} done`;
+  }
+  render();
+  document.querySelectorAll('.switcher button').forEach(b => b.addEventListener('click', () => {
+    document.documentElement.dataset.palette = b.dataset.p;
+    document.querySelectorAll('.switcher button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  const root = document.documentElement, tb = document.getElementById('theme');
+  tb.addEventListener('click', () => {
+    const toLight = root.dataset.theme !== 'light';
+    root.dataset.theme = toLight ? 'light' : 'dark';
+    tb.textContent = toLight ? '☾ Dark' : '☀ Light';
+  });
+</script>
+</body>
+</html>

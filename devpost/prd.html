@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ApplyReady PRD</title>
+<style>
+  :root, :root[data-theme="dark"] {
+    --bg: #212227; --surface: #2a2b31; --raised: #33343b; --border: #3d3e46;
+    --text: #f3f1ec; --muted: #a9a8b0; --accent: #d9706b; --accent-soft: rgba(217,112,107,.13);
+    --crit: #ff6b6b; --imp: #f5b942; --nice: #a9a8b0;
+  }
+  :root[data-theme="light"] {
+    --bg: #f1ede5; --surface: #fbf9f5; --raised: #e8e3d9; --border: #ddd6ca;
+    --text: #212227; --muted: #6a655e; --accent: #601e1d; --accent-soft: rgba(96,30,29,.08);
+    --crit: #d03b3b; --imp: #a6680c; --nice: #6a655e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-feature-settings: "cv01", "ss03"; }
+  main { max-width: 920px; margin: 0 auto; padding: 32px 16px 96px; }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
+  .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; }
+  .toggle { font: inherit; font-size: 13px; background: transparent; color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+  h1 { font-size: 48px; line-height: 1; letter-spacing: -0.022em; font-weight: 510; margin: 0 0 14px; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { color: var(--muted); font-size: 17px; max-width: 640px; margin: 0; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 590; margin: 56px 0 14px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .muted { color: var(--muted); }
+  svg { width: 100%; height: auto; display: block; }
+  .n { fill: var(--raised); stroke: var(--border); }
+  .n-hi { fill: var(--accent-soft); stroke: var(--accent); }
+  .t { fill: var(--text); font: 510 12px Inter, system-ui, sans-serif; }
+  .s { fill: var(--muted); font: 11px Inter, system-ui, sans-serif; }
+  .ln { stroke: var(--muted); stroke-width: 1.3; fill: none; }
+  .lp { stroke: var(--accent); stroke-width: 1.3; fill: none; stroke-dasharray: 5 4; }
+  .lpt { fill: var(--accent); font: 11px Inter, system-ui, sans-serif; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .tabs button { font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+    background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  .tabs button[aria-selected="true"] { color: var(--text); border-color: var(--accent); background: var(--accent-soft); }
+  .panel h3 { margin: 0 0 6px; font-weight: 590; font-size: 17px; letter-spacing: -0.01em; }
+  .panel ul { margin: 8px 0 0; padding-left: 0; list-style: none; }
+  .panel li { padding: 6px 0; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+  .panel li:first-child { border-top: 0; }
+  .ck { flex: none; width: 15px; height: 15px; border: 1.5px solid var(--muted); border-radius: 4px; margin-top: 4px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+  .state { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .state b { display: block; font-weight: 590; margin-bottom: 2px; }
+  .state span { color: var(--muted); font-size: 14px; }
+  .assume { border-style: dashed; }
+  .assume b::after { content: " · assumption"; color: var(--imp); font-weight: 400; font-size: 12px; }
+  .imp { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill { font-size: 12px; padding: 2px 9px; border-radius: 4px; border: 1px solid; }
+  .p-c { color: var(--crit); border-color: var(--crit); }
+  .p-i { color: var(--imp); border-color: var(--imp); }
+  .p-n { color: var(--nice); border-color: var(--nice); }
+  .swatches { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .sw { width: 92px; font-size: 11px; color: var(--muted); }
+  .sw i { display: block; height: 36px; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 4px; }
+  details { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+  summary { cursor: pointer; padding: 14px 16px; font-weight: 590; list-style: none; display: flex; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; margin-left: auto; color: var(--muted); }
+  details[open] summary::after { content: "−"; }
+  details ul { margin: 0; padding: 0 16px 14px 34px; }
+  details li { margin: 3px 0; }
+  .email { font: 13px/1.6 ui-monospace, Consolas, monospace; background: var(--raised); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 14px; white-space: pre-wrap; margin-top: 10px; }
+  footer { margin-top: 56px; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <span class="tag">devpost/prd.md · approved · companion view</span>
+    <button class="toggle" id="toggle" type="button">Switch to light</button>
+  </div>
+
+  <h1>Apply<em>Ready</em> — what it does</h1>
+  <p class="lede">Scope said "a checklist that chases you." Now we know exactly what that means: eight screens and states, three emails, and checks you can verify by looking.</p>
+
+  <h2>The core journey</h2>
+  <div class="card">
+    <svg viewBox="0 0 860 250" role="img" aria-label="Journey: Landing, Scan, Dashboard, Email magic link, Tick items, Daily reminder, Mark submitted, Follow-up. The daily reminder loops back to the dashboard.">
+      <defs>
+        <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--muted)"/></marker>
+        <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--accent)"/></marker>
+      </defs>
+      <!-- row 1 -->
+      <rect class="n" x="10" y="20" width="180" height="56" rx="8"/><text class="t" x="100" y="44" text-anchor="middle">1 · Landing</text><text class="s" x="100" y="62" text-anchor="middle">paste link or text</text>
+      <rect class="n" x="230" y="20" width="180" height="56" rx="8"/><text class="t" x="320" y="44" text-anchor="middle">2 · Scan</text><text class="s" x="320" y="62" text-anchor="middle">staged progress</text>
+      <rect class="n" x="450" y="20" width="180" height="56" rx="8"/><text class="t" x="540" y="44" text-anchor="middle">3 · Dashboard</text><text class="s" x="540" y="62" text-anchor="middle">ranked · guidance · best-by</text>
+      <rect class="n" x="670" y="20" width="180" height="56" rx="8"/><text class="t" x="760" y="44" text-anchor="middle">4 · Email + magic link</text><text class="s" x="760" y="62" text-anchor="middle">save &amp; reminders on</text>
+      <line class="ln" x1="190" y1="48" x2="228" y2="48" marker-end="url(#a)"/>
+      <line class="ln" x1="410" y1="48" x2="448" y2="48" marker-end="url(#a)"/>
+      <line class="ln" x1="630" y1="48" x2="668" y2="48" marker-end="url(#a)"/>
+      <path class="ln" d="M760,76 L760,110 L760,140" marker-end="url(#a)"/>
+      <!-- row 2 (right to left) -->
+      <rect class="n" x="670" y="142" width="180" height="56" rx="8"/><text class="t" x="760" y="166" text-anchor="middle">5 · Tick items</text><text class="s" x="760" y="184" text-anchor="middle">progress updates</text>
+      <rect class="n-hi" x="450" y="142" width="180" height="56" rx="8"/><text class="t" x="540" y="166" text-anchor="middle">6 · Daily reminder</text><text class="s" x="540" y="184" text-anchor="middle">what's left + days</text>
+      <rect class="n" x="230" y="142" width="180" height="56" rx="8"/><text class="t" x="320" y="166" text-anchor="middle">7 · Mark submitted</text><text class="s" x="320" y="184" text-anchor="middle">reminders stop</text>
+      <rect class="n" x="10" y="142" width="180" height="56" rx="8"/><text class="t" x="100" y="166" text-anchor="middle">8 · Follow-up</text><text class="s" x="100" y="184" text-anchor="middle">opt-in, once, default 2 wks</text>
+      <line class="ln" x1="670" y1="170" x2="632" y2="170" marker-end="url(#a)"/>
+      <line class="ln" x1="450" y1="170" x2="412" y2="170" marker-end="url(#a)"/>
+      <line class="ln" x1="230" y1="170" x2="192" y2="170" marker-end="url(#a)"/>
+      <path class="lp" d="M540,142 C540,110 540,100 540,80" marker-end="url(#b)"/>
+      <text class="lpt" x="548" y="114">link back</text>
+      <text class="s" x="430" y="236" text-anchor="middle">Success: a real email names exactly what's undone, and its link opens the right dashboard.</text>
+    </svg>
+  </div>
+
+  <h2>Screen by screen</h2>
+  <div class="card">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="panel" id="panel" role="tabpanel"></div>
+  </div>
+
+  <h2>What-ifs</h2>
+  <div class="grid">
+    <div class="state"><b>First use</b><span>Landing with paste box. My applications shows an empty state pointing back to it.</span></div>
+    <div class="state"><b>Blocked link</b><span>"We couldn't read that link. Paste the announcement text instead." Text box ready.</span></div>
+    <div class="state"><b>No clear deadline</b><span>"No fixed deadline found." Checklist shown, no countdown or best-by dates.</span></div>
+    <div class="state"><b>Deadline passed</b><span>No plan built. "Deadline passed — this application is closed."</span></div>
+    <div class="state"><b>Not an application</b><span>"This doesn't look like an application or opportunity." No dashboard.</span></div>
+    <div class="state"><b>Email not confirmed yet</b><span>Dashboard works in this browser; reminders off until the magic link is clicked.</span></div>
+    <div class="state"><b>All ticked, not submitted</b><span>Reminders continue, nudging you to submit.</span></div>
+    <div class="state"><b>Very tight deadline</b><span>Plan still built, best-by dates compressed, "Tight deadline" warning.</span></div>
+  </div>
+
+  <h2>Look and feel</h2>
+  <div class="card">
+    <p style="margin-top:0">Linear's structure (Inter, tight headings, hairline borders, 6px/12px radii, one primary action per view) + Kariiya's hero composition (pill badge, big headline with one accent word, dashboard preview) + <b>Charcoal &amp; Oxblood</b> colour. <b>Dark by default</b>, light on toggle. This page uses that look; try the toggle.</p>
+    <div class="imp"><span class="pill p-c">Critical</span><span class="pill p-i">Important</span><span class="pill p-n">Nice to have</span><span class="muted" style="font-size:13px">← importance colours, separate from the accent</span></div>
+    <div class="swatches">
+      <div class="sw"><i style="background:#212227"></i>Dark bg<br>#212227</div>
+      <div class="sw"><i style="background:#F1EDE5"></i>Light bg<br>#F1EDE5</div>
+      <div class="sw"><i style="background:#601E1D"></i>Accent (light)<br>#601E1D</div>
+      <div class="sw"><i style="background:#D9706B"></i>Accent (dark)<br>#D9706B</div>
+    </div>
+  </div>
+
+  <h2>Boundary</h2>
+  <details open><summary>Building now</summary><ul>
+    <li>Landing page with paste box · staged scan progress · link fetch with blocked fallback</li>
+    <li>AI extraction: ranking, guidance, best-by dates</li>
+    <li>Dashboard with tickable checklist · My applications</li>
+    <li>Magic-link email · daily reminders + "send now" demo trigger</li>
+    <li>Mark submitted + one opt-in follow-up · dark/light theme</li>
+  </ul></details>
+  <details><summary>Deferred</summary><ul>
+    <li>WhatsApp reminders — verification time</li>
+    <li>Full accounts — magic link covers identity</li>
+    <li>Editing extracted details / custom items — not needed to prove the loop</li>
+    <li>Reminder time-of-day preferences</li>
+  </ul></details>
+  <details><summary>Non-goals</summary><ul>
+    <li>Writing essays for the user</li>
+    <li>Finding or recommending opportunities</li>
+    <li>Submitting applications on the user's behalf</li>
+  </ul></details>
+
+  <footer>Markdown (<code>devpost/prd.md</code>) is canonical. This page is a review companion.</footer>
+</main>
+<script>
+  const screens = [
+    { name: "Landing", desc: "Pill badge, headline with one accent word, short paragraph, paste box + Scan. Below: how it works and a dashboard preview.",
+      checks: ["Paste a working URL → Scan → progress → dashboard", "Plain text skips the fetch stage and still works"] },
+    { name: "Scan", desc: "Stages appear as they happen: fetching page → reading requirements → finding deadline → building your plan.",
+      checks: ["Current stage spins, finished stages tick", "Blocked URL → warning + ready text box"] },
+    { name: "Dashboard", desc: "Header: title, organisation, type, deadline countdown, progress. Ranked key details, guidance per writing piece, checklist with best-by dates.",
+      checks: ["Every item has an importance label + colour and a best-by date", "Ordered by importance, then best-by date", "Ticks persist after reload; overdue items flagged"] },
+    { name: "Magic link", desc: "\"Get daily reminders — enter your email.\" → \"Check your email\" → click link → \"You're in — reminders are on.\"",
+      checks: ["Magic link email arrives", "Clicking it saves the application under that email"] },
+    { name: "Reminder email", desc: "Subject with title + days left; unticked items, overdue flagged; private link back.",
+      email: "Subject: [Scholarship] · 12 days left\n\nStill to do:\n☐ Draft statement of purpose  (overdue — best by Oct 30)\n☐ Request official transcript\n☐ Tailor CV to the 3 key criteria\n\n→ Continue where you stopped",
+      checks: ["\"Send today's reminder now\" delivers it immediately", "Lists exactly the unticked items; link opens the dashboard"] },
+    { name: "Submit + follow-up", desc: "Mark as submitted → daily reminders stop → \"Remind you to follow up?\" yes/no + when (default 2 weeks).",
+      checks: ["Status becomes Submitted", "Yes → exactly one follow-up email; No → none"] },
+    { name: "My applications", desc: "Every application under your email: title, type, deadline, days left, progress, status.",
+      checks: ["All saved applications appear with correct status and progress", "Empty state points back to the paste box"] }
+  ];
+  const tabs = document.getElementById('tabs'), panel = document.getElementById('panel');
+  function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function show(i) {
+    [...tabs.children].forEach((b, j) => b.setAttribute('aria-selected', String(i === j)));
+    const s = screens[i];
+    panel.innerHTML = `<h3>${esc(s.name)}</h3><p class="muted" style="margin:0">${esc(s.desc)}</p>` +
+      (s.email ? `<div class="email">${esc(s.email)}</div>` : '') +
+      `<ul style="margin-top:12px">${s.checks.map(c => `<li><span class="ck"></span><span>${esc(c)}</span></li>`).join('')}</ul>`;
+  }
+  screens.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.role = 'tab'; b.textContent = s.name;
+    b.addEventListener('click', () => show(i));
+    tabs.appendChild(b);
+  });
+  show(0);
+  const root = document.documentElement, tg = document.getElementById('toggle');
+  tg.addEventListener('click', () => {
+    const light = root.dataset.theme !== 'light';
+    root.dataset.theme = light ? 'light' : 'dark';
+    tg.textContent = light ? 'Switch to dark' : 'Switch to light';
+  });
+</script>
+</body>
+</html>

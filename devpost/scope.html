@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ApplyReady Scope</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --surface: #ffffff; --text: #1f2328; --muted: #6b7280;
+    --border: #e6e6e3; --accent: #5e6ad2; --accent-soft: #eef0fb;
+    --good: #1a7f4b; --good-soft: #e8f5ee; --warn: #9a6700; --warn-soft: #fdf4dc;
+    --cut: #b42318; --cut-soft: #fdecea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111214; --surface: #18191c; --text: #e8e8ea; --muted: #9a9ca3;
+      --border: #2a2b30; --accent: #8a93ff; --accent-soft: #23253a;
+      --good: #4cc38a; --good-soft: #17281f; --warn: #e2b340; --warn-soft: #2b2512;
+      --cut: #ff7b72; --cut-soft: #2d1716;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111214; --surface: #18191c; --text: #e8e8ea; --muted: #9a9ca3;
+    --border: #2a2b30; --accent: #8a93ff; --accent-soft: #23253a;
+    --good: #4cc38a; --good-soft: #17281f; --warn: #e2b340; --warn-soft: #2b2512;
+    --cut: #ff7b72; --cut-soft: #2d1716;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 48px 16px 80px; }
+  .tag { display: inline-block; font-size: 12px; color: var(--muted); border: 1px solid var(--border);
+    border-radius: 999px; padding: 2px 10px; margin-bottom: 12px; }
+  h1 { font-size: 32px; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .lede { color: var(--muted); font-size: 17px; margin: 0 0 32px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+    margin: 40px 0 12px; font-weight: 600; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+  .kernel { border-left: 3px solid var(--accent); background: var(--accent-soft); }
+  .kernel p { margin: 0; font-size: 16px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+  .card h3 { margin: 0 0 6px; font-size: 15px; }
+  .card p { margin: 0; color: var(--muted); }
+  blockquote { margin: 0; padding: 14px 18px; border-left: 3px solid var(--border); color: var(--muted); font-style: italic; }
+  svg { width: 100%; height: auto; display: block; }
+  .flow-box { fill: var(--surface); stroke: var(--border); }
+  .flow-hi { fill: var(--accent-soft); stroke: var(--accent); }
+  .flow-text { fill: var(--text); font-size: 13px; font-family: inherit; }
+  .flow-sub { fill: var(--muted); font-size: 11px; font-family: inherit; }
+  .flow-line { stroke: var(--muted); fill: none; stroke-width: 1.5; }
+  .flow-loop { stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-dasharray: 5 4; }
+  .loop-label { fill: var(--accent); font-size: 11px; font-family: inherit; }
+  .steps { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .steps button { font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+    background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .steps button[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+  #step-detail { min-height: 70px; }
+  details { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; }
+  summary { cursor: pointer; padding: 14px 18px; font-weight: 600; list-style: none; display: flex; gap: 10px; align-items: center; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; margin-left: auto; color: var(--muted); }
+  details[open] summary::after { content: "−"; }
+  details ul { margin: 0; padding: 0 18px 16px 38px; }
+  details li { margin: 4px 0; }
+  .pill { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+  .now { background: var(--good-soft); color: var(--good); }
+  .later { background: var(--warn-soft); color: var(--warn); }
+  .cut { background: var(--cut-soft); color: var(--cut); }
+  .email { font-family: ui-monospace, Consolas, monospace; font-size: 13px; white-space: pre-wrap; color: var(--text); }
+  footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <span class="tag">devpost/scope.md · draft · companion view</span>
+  <h1>ApplyReady</h1>
+  <p class="lede">Paste an application announcement and get a plan that works backward from the deadline, then daily email nudges until every requirement is ticked off.</p>
+
+  <h2>The unique kernel</h2>
+  <div class="card kernel">
+    <p>Not a summariser. It's a <strong>deadline-driven checklist that chases you</strong>: every unticked item becomes a daily reminder with days remaining and a link back to where you stopped, and after you submit, it tells you when to follow up. A chat answer goes quiet once you close it; ApplyReady keeps reminding you until you submit and follow up.</p>
+  </div>
+
+  <h2>The core loop</h2>
+  <div class="card">
+    <svg viewBox="0 0 820 230" role="img" aria-label="Flow: paste link or text, AI extracts and plans, application dashboard, daily email reminder, tick items, submit and follow up. The reminder loops back to the dashboard.">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="color: var(--muted)"/>
+        </marker>
+        <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" style="fill: var(--accent)"/>
+        </marker>
+      </defs>
+      <g>
+        <rect class="flow-box" x="10" y="40" width="130" height="64" rx="8"/>
+        <text class="flow-text" x="75" y="68" text-anchor="middle">Paste link</text>
+        <text class="flow-sub" x="75" y="86" text-anchor="middle">or text if blocked</text>
+
+        <rect class="flow-box" x="175" y="40" width="130" height="64" rx="8"/>
+        <text class="flow-text" x="240" y="68" text-anchor="middle">AI extracts</text>
+        <text class="flow-sub" x="240" y="86" text-anchor="middle">ranks + guides</text>
+
+        <rect class="flow-box" x="340" y="40" width="130" height="64" rx="8"/>
+        <text class="flow-text" x="405" y="68" text-anchor="middle">Dashboard</text>
+        <text class="flow-sub" x="405" y="86" text-anchor="middle">checklist + countdown</text>
+
+        <rect class="flow-hi" x="505" y="40" width="130" height="64" rx="8"/>
+        <text class="flow-text" x="570" y="68" text-anchor="middle">Daily email</text>
+        <text class="flow-sub" x="570" y="86" text-anchor="middle">what's left + days</text>
+
+        <rect class="flow-box" x="670" y="40" width="140" height="64" rx="8"/>
+        <text class="flow-text" x="740" y="68" text-anchor="middle">Submit</text>
+        <text class="flow-sub" x="740" y="86" text-anchor="middle">→ follow-up nudge</text>
+
+        <line class="flow-line" x1="140" y1="72" x2="173" y2="72" marker-end="url(#arr)"/>
+        <line class="flow-line" x1="305" y1="72" x2="338" y2="72" marker-end="url(#arr)"/>
+        <line class="flow-line" x1="470" y1="72" x2="503" y2="72" marker-end="url(#arr)"/>
+        <line class="flow-line" x1="635" y1="72" x2="668" y2="72" marker-end="url(#arr)"/>
+
+        <path class="flow-loop" d="M570,104 C570,180 405,180 405,108" marker-end="url(#arr2)"/>
+        <text class="loop-label" x="487" y="190" text-anchor="middle">link back → tick items → repeat until done</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="steps" role="group" aria-label="Walk the demo">
+      <button data-i="0" aria-pressed="true">1 · Paste</button>
+      <button data-i="1" aria-pressed="false">2 · Extract</button>
+      <button data-i="2" aria-pressed="false">3 · Dashboard</button>
+      <button data-i="3" aria-pressed="false">4 · Email</button>
+      <button data-i="4" aria-pressed="false">5 · Follow up</button>
+    </div>
+    <div id="step-detail"></div>
+  </div>
+
+  <h2>Who it's for</h2>
+  <div class="grid">
+    <div class="card"><h3>The person</h3><p>A recent graduate juggling scholarships (BSc, Masters, PhD), admissions, jobs and grants, in any country.</p></div>
+    <div class="card"><h3>What goes wrong today</h3><p>They find opportunities but lose them in execution: essays late, documents missing, no plan, no follow-up. So they fall back on bulk-applying.</p></div>
+  </div>
+
+  <h2>Why it matters</h2>
+  <blockquote>"Each application I send is worthy of being shortlisted."</blockquote>
+
+  <h2>Feel</h2>
+  <div class="card"><p>Linear + Notion: clean, minimal, structured, calm. Calm and organised, not a nagging alarm.</p></div>
+
+  <h2>Finish line (the demo)</h2>
+  <div class="card"><p>Paste a real link → dashboard with ranked requirements, guidance, paced checklist → tick a couple → trigger "next day" → <strong>a real email lands naming exactly what's left</strong> → click it, back on the dashboard.</p></div>
+
+  <h2>Boundary</h2>
+  <details open>
+    <summary><span class="pill now">NOW</span> In the proof of concept</summary>
+    <ul>
+      <li>Paste URL (fetch page) with "link blocked, paste text" fallback</li>
+      <li>AI extraction: requirements, deadline, documents, essay/cover/CV guidance, importance ranking, checklist</li>
+      <li>Dashboard per application + list of all applications</li>
+      <li>Tickable checklist, progress, days remaining</li>
+      <li>Email reminders (unticked items + days left + link back), demo trigger for "next day"</li>
+      <li>Mark submitted → follow-up reminder N days after deadline if no reply</li>
+    </ul>
+  </details>
+  <details>
+    <summary><span class="pill later">LATER</span> Worth doing, not now</summary>
+    <ul>
+      <li>WhatsApp reminders</li>
+      <li>Weekly digest across applications</li>
+      <li>Smarter follow-up timing per application type</li>
+      <li>Browser extension / share-sheet capture</li>
+    </ul>
+  </details>
+  <details>
+    <summary><span class="pill cut">CUT</span> With reasons</summary>
+    <ul>
+      <li><strong>WhatsApp now:</strong> verification could eat the build window; email proves the same loop.</li>
+      <li><strong>Ghostwriting essays:</strong> guide structure, keep the applicant's own voice.</li>
+    </ul>
+  </details>
+
+  <footer>Markdown (<code>devpost/scope.md</code>) is the canonical version. This page is a review companion.</footer>
+</main>
+<script>
+  const steps = [
+    "<strong>Paste.</strong> Drop in a scholarship or job link. If the site blocks fetching, a clear warning asks you to paste the description instead.",
+    "<strong>Extract.</strong> One AI pass pulls out eligibility, deadline, required documents, and essay/cover letter/CV guidance, ranked by importance.",
+    "<strong>Dashboard.</strong> The application gets its own page: ranked requirements, guidance, and a checklist paced to the deadline with a countdown.",
+    "<strong>Email.</strong> Each day, an email lists what's still unticked:<div class='email' style='margin-top:8px'>Chevening Scholarship · 12 days left\n☐ Draft statement of purpose\n☐ Request transcript\n→ Continue where you stopped</div>",
+    "<strong>Follow up.</strong> Mark it submitted. If there's no reply N days after the deadline, ApplyReady reminds you to send a follow-up."
+  ];
+  const btns = document.querySelectorAll('.steps button');
+  const detail = document.getElementById('step-detail');
+  function show(i) {
+    btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.i == i)));
+    detail.innerHTML = steps[i];
+  }
+  btns.forEach(b => b.addEventListener('click', () => show(+b.dataset.i)));
+  show(0);
+</script>
+</body>
+</html>

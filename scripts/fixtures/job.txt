@@ -1,0 +1,29 @@
+Junior Frontend Engineer (React / Next.js) — Lagos or Remote (Africa)
+Kestrel Pay
+
+About us
+Kestrel Pay helps small businesses across West Africa accept payments online. We are a team of 40 shipping weekly.
+
+The role
+You will build and maintain our merchant dashboard in React and Next.js, working closely with design and backend engineers.
+
+What you'll do
+- Build accessible, responsive UI components in React and TypeScript
+- Ship features end to end with backend engineers
+- Write tests and take part in code reviews
+
+Requirements
+- 1–2 years of professional experience with React
+- Solid TypeScript and modern CSS (Tailwind a plus)
+- Experience consuming REST APIs
+- A portfolio or GitHub profile showing real projects
+- Must be able to work in WAT (UTC+1) hours
+
+Nice to have
+- Next.js App Router experience
+- Fintech or payments background
+
+How to apply
+Send your CV, a short cover letter (max 300 words) telling us about a UI you are proud of, and a link to your portfolio or GitHub through our careers page. Shortlisted candidates will complete a 3-hour take-home task.
+
+Applications close 14 November 2026.

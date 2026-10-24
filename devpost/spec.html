@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ApplyReady Spec</title>
+<style>
+  :root, :root[data-theme="dark"] {
+    --bg: #212227; --surface: #2a2b31; --raised: #33343b; --border: #3d3e46;
+    --text: #f3f1ec; --muted: #a9a8b0; --faint: #74737c; --accent: #d9706b; --accent-soft: rgba(217,112,107,.13);
+    --svc: #5fa8d3; --svc-soft: rgba(95,168,211,.12); --imp: #f5b942;
+  }
+  :root[data-theme="light"] {
+    --bg: #f1ede5; --surface: #fbf9f5; --raised: #e8e3d9; --border: #ddd6ca;
+    --text: #212227; --muted: #6a655e; --faint: #9c968c; --accent: #601e1d; --accent-soft: rgba(96,30,29,.08);
+    --svc: #2f6f95; --svc-soft: rgba(47,111,149,.08); --imp: #a6680c;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.6 Inter, ui-sans-serif, system-ui, "Segoe UI", sans-serif; }
+  main { max-width: 940px; margin: 0 auto; padding: 32px 16px 96px; }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; gap: 12px; }
+  .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; }
+  .toggle { font: inherit; font-size: 13px; background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+  h1 { font-size: 44px; line-height: 1.05; letter-spacing: -0.025em; font-weight: 600; margin: 0 0 12px; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { color: var(--muted); font-size: 17px; max-width: 680px; margin: 0; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; margin: 52px 0 14px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  svg { width: 100%; height: auto; display: block; }
+  .box { fill: var(--raised); stroke: var(--border); }
+  .app { fill: var(--accent-soft); stroke: var(--accent); }
+  .svc { fill: var(--svc-soft); stroke: var(--svc); }
+  .t { fill: var(--text); font: 600 13px Inter, system-ui, sans-serif; }
+  .s { fill: var(--muted); font: 11px Inter, system-ui, sans-serif; }
+  .ln { stroke: var(--muted); stroke-width: 1.3; fill: none; }
+  .ll { fill: var(--muted); font: 10.5px ui-monospace, Consolas, monospace; }
+  .hl .ln { stroke: var(--accent); stroke-width: 2; }
+  .hl .box, .hl .svc, .hl .app { stroke-width: 2; }
+  .dim { opacity: .28; transition: opacity .2s; }
+  g { transition: opacity .2s; }
+  .stepper { display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0 12px; }
+  .stepper button { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 999px; cursor: pointer; background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  .stepper button[aria-pressed="true"] { color: var(--text); border-color: var(--accent); background: var(--accent-soft); }
+  .stepdesc { min-height: 92px; }
+  .stepdesc p { margin: 0 0 6px; }
+  .files { font: 12px ui-monospace, Consolas, monospace; color: var(--muted); }
+  .plain p { margin: 0 0 10px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+  .k { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .k b { display: block; margin-bottom: 2px; }
+  .k span { color: var(--muted); font-size: 14px; }
+  .k a { color: var(--accent); font-size: 12px; }
+  pre { font: 12.5px/1.55 ui-monospace, Consolas, monospace; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; overflow-x: auto; margin: 0; color: var(--muted); }
+  pre b { color: var(--text); font-weight: 600; }
+  .order { counter-reset: o; list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+  .order li { counter-increment: o; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px; display: flex; gap: 12px; align-items: center; }
+  .order li::before { content: counter(o); font-weight: 600; color: var(--accent); width: 18px; }
+  .order li small { margin-left: auto; color: var(--faint); font-size: 12px; }
+  .order li.trim small { color: var(--imp); }
+  details { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; }
+  summary { cursor: pointer; padding: 13px 16px; font-weight: 600; list-style: none; display: flex; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; margin-left: auto; color: var(--muted); }
+  details[open] summary::after { content: "−"; }
+  details .in { padding: 0 16px 14px; color: var(--muted); }
+  details .in p { margin: 0 0 8px; }
+  .warn { border-left: 3px solid var(--imp); }
+  footer { margin-top: 52px; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <span class="tag">devpost/spec.md · approved · companion view</span>
+    <button class="toggle" id="toggle" type="button">Switch to light</button>
+  </div>
+  <h1>How Apply<em>Ready</em> is built</h1>
+  <p class="lede">One Next.js app on Vercel, three outside services, one daily timer. Step through the journey to see which pieces light up.</p>
+
+  <h2>Architecture · step through the journey</h2>
+  <div class="card">
+    <svg viewBox="0 0 880 380" role="img" aria-label="Architecture: browser talks to the Next.js app on Vercel. The app calls River LLM, Supabase database and auth, and Resend email. Vercel Cron calls the app daily. Emails reach the user's inbox, which links back to the browser.">
+      <defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--muted)"/></marker></defs>
+
+      <g id="n-browser"><rect class="box" x="20" y="150" width="150" height="70" rx="10"/><text class="t" x="95" y="180" text-anchor="middle">Browser</text><text class="s" x="95" y="198" text-anchor="middle">landing · dashboard</text></g>
+      <g id="n-app"><rect class="app" x="250" y="110" width="260" height="150" rx="12"/><text class="t" x="380" y="138" text-anchor="middle">Next.js app on Vercel</text>
+        <text class="s" x="270" y="164">/api/fetch-page · /api/scan</text><text class="s" x="270" y="182">/a/[id] · /applications</text><text class="s" x="270" y="200">/api/items · /api/applications</text><text class="s" x="270" y="218">/auth/callback · remind-now</text><text class="s" x="270" y="236">/api/cron/daily</text></g>
+      <g id="n-cron"><rect class="box" x="300" y="20" width="160" height="50" rx="10"/><text class="t" x="380" y="42" text-anchor="middle">Vercel Cron</text><text class="s" x="380" y="59" text-anchor="middle">once a day, 07:00 UTC</text></g>
+      <g id="n-river"><rect class="svc" x="600" y="30" width="190" height="60" rx="10"/><text class="t" x="695" y="56" text-anchor="middle">LLM · Oxion</text><text class="s" x="695" y="74" text-anchor="middle">text → JSON (Zod-checked)</text></g>
+      <g id="n-supa"><rect class="svc" x="600" y="155" width="190" height="60" rx="10"/><text class="t" x="695" y="181" text-anchor="middle">Supabase</text><text class="s" x="695" y="199" text-anchor="middle">Postgres + magic link</text></g>
+      <g id="n-resend"><rect class="svc" x="600" y="280" width="190" height="60" rx="10"/><text class="t" x="695" y="306" text-anchor="middle">Resend</text><text class="s" x="695" y="324" text-anchor="middle">reminder + follow-up email</text></g>
+      <g id="n-inbox"><rect class="box" x="20" y="290" width="150" height="60" rx="10"/><text class="t" x="95" y="316" text-anchor="middle">Your inbox</text><text class="s" x="95" y="334" text-anchor="middle">link back → /a/[id]</text></g>
+
+      <g id="e-ba"><line class="ln" x1="170" y1="185" x2="248" y2="185" marker-end="url(#m)"/></g>
+      <g id="e-ca"><line class="ln" x1="380" y1="70" x2="380" y2="108" marker-end="url(#m)"/></g>
+      <g id="e-ar"><path class="ln" d="M510,140 C560,120 560,70 598,62" marker-end="url(#m)"/></g>
+      <g id="e-as"><line class="ln" x1="510" y1="185" x2="598" y2="185" marker-end="url(#m)"/></g>
+      <g id="e-ae"><path class="ln" d="M510,235 C560,250 560,300 598,308" marker-end="url(#m)"/></g>
+      <g id="e-si"><path class="ln" d="M695,215 C695,250 400,300 172,315" marker-end="url(#m)" style="stroke-dasharray:4 4"/></g>
+      <g id="e-ei"><path class="ln" d="M600,320 C450,350 300,345 172,330" marker-end="url(#m)"/></g>
+      <g id="e-ib"><line class="ln" x1="95" y1="290" x2="95" y2="222" marker-end="url(#m)"/></g>
+    </svg>
+    <div class="stepper" id="stepper"></div>
+    <div class="stepdesc" id="desc"></div>
+  </div>
+
+  <h2>In plain language</h2>
+  <div class="card plain">
+    <p><b>The AI proposes, the code decides dates.</b> The model (via Oxion) reads the announcement and returns JSON: what's required, how important it is, and roughly how many days each item takes. Zod checks the shape (one retry if it's wrong). Then <code>lib/plan.ts</code> counts backward from the deadline to set each best-by date, because models are unreliable at calendar maths.</p>
+    <p><b>"Daily" is just one timer.</b> Vercel Cron calls <code>/api/cron/daily</code> once a day. That route asks the database who's in progress, confirmed, and not yet reminded today, builds each email from the unticked items, and sends it through Resend. The demo button reuses the same builder for one application.</p>
+    <p style="margin:0"><b>The link is the key.</b> Each dashboard lives at an unguessable <code>/a/[id]</code>, so email links work on any device. The magic link (Supabase) ties applications to your email and unlocks <i>My applications</i>.</p>
+  </div>
+
+  <h2>Stack</h2>
+  <div class="grid">
+    <div class="k"><b>Next.js + TypeScript</b><span>UI, API routes, cron endpoint in one repo.</span><br><a href="https://nextjs.org/docs">nextjs.org/docs</a></div>
+    <div class="k"><b>Tailwind v4</b><span>Palette D as CSS variables, dark default.</span><br><a href="https://tailwindcss.com/docs">tailwindcss.com/docs</a></div>
+    <div class="k"><b>Oxion LLM (OpenAI SDK)</b><span>Your key. <code>oxionai.com/v1</code>, JSON mode, free 0.5M tokens/mo. River as fallback via env vars.</span><br><a href="https://oxionai.com/docs/getting-started">oxion docs</a></div>
+    <div class="k"><b>Supabase</b><span>Two tables + passwordless magic link.</span><br><a href="https://supabase.com/docs/guides/auth/auth-email-passwordless">magic link docs</a></div>
+    <div class="k warn"><b>Resend</b><span>Reminder emails. Without a domain it only delivers to your own inbox, which is fine for the demo.</span><br><a href="https://resend.com/docs/send-with-nextjs">resend docs</a></div>
+    <div class="k"><b>Vercel Cron</b><span>Once a day on Hobby, exactly what we need.</span><br><a href="https://vercel.com/docs/cron-jobs">cron docs</a></div>
+  </div>
+
+  <h2>Data</h2>
+<pre><b>applications</b>   id (uuid = private link) · user_id/email (set on magic link) · reminders_enabled
+               title · organization · type · deadline · deadline_text · tight
+               key_details[] · guidance[] · status · submitted_at
+               follow_up_at · follow_up_sent · last_reminder_at
+<b>checklist_items</b> id · application_id → applications · title · detail
+               importance (critical|important|nice) · best_by · done · position</pre>
+
+  <h2>Build order · protects the demo</h2>
+  <ol class="order">
+    <li>Pick Oxion model + verify JSON output (one-off script)<small>de-risk first</small></li>
+    <li>Scan → plan → save → dashboard<small>the core</small></li>
+    <li>Tick items + progress</li>
+    <li>Magic link + claim + My applications</li>
+    <li>"Send today's reminder now" email<small>the aha moment</small></li>
+    <li>Mark submitted + follow-up choice</li>
+    <li>Daily cron + deploy to Vercel</li>
+    <li>Landing page polish + theme toggle</li>
+    <li class="trim">URL fetch with blocked fallback<small>trim first if short on time</small></li>
+  </ol>
+
+  <h2>Where it breaks, and what you see</h2>
+  <details open><summary>Link blocked / JS-only page</summary><div class="in"><p>"We couldn't read that link. Paste the announcement text instead." The text box is focused.</p></div></details>
+  <details><summary>AI returns bad JSON</summary><div class="in"><p>One retry with the validation error. Then "We couldn't read that announcement — try pasting the text." Nothing is saved.</p></div></details>
+  <details><summary>AI is slow</summary><div class="in"><p>Progress keeps moving; at 45s, abort with a retry button.</p></div></details>
+  <details><summary>Email not delivered</summary><div class="in"><p>Show the real error, never a fake "sent". For the demo, use your Resend account email.</p></div></details>
+  <details><summary>Cron misses a day</summary><div class="in"><p><code>last_reminder_at &lt; today</code> lets the next run catch up. No double sends.</p></div></details>
+
+  <h2>Simplified on purpose</h2>
+  <details><summary>Capability URL instead of login-to-view</summary><div class="in"><p>The scan → dashboard flow stays login-free, and email links work anywhere. Fuller version: session required + row-level security policies.</p></div></details>
+  <details><summary>Timed animation for scan stages 2–4</summary><div class="in"><p>The real work is one LLM call. The fetch stage and final completion are real. Fuller version: stream server events.</p></div></details>
+  <details><summary>One daily cron instead of a job queue</summary><div class="in"><p>Fuller version: per-user times, timezones, a queue like Inngest.</p></div></details>
+
+  <footer>Markdown (<code>devpost/spec.md</code>) is canonical. This page is a review companion.</footer>
+</main>
+<script>
+  const all = ['n-browser','n-app','n-cron','n-river','n-supa','n-resend','n-inbox','e-ba','e-ca','e-ar','e-as','e-ae','e-si','e-ei','e-ib'];
+  const steps = [
+    { n: 'Paste + scan', on: ['n-browser','n-app','e-ba'], d: 'You paste a link and click Scan. <code>/api/fetch-page</code> grabs the page text, or reports it blocked so you can paste the text.', f: 'components/landing/PasteBox.tsx · app/api/fetch-page/route.ts · lib/fetchPage.ts' },
+    { n: 'Extract', on: ['n-browser','n-app','n-river','n-supa','e-ba','e-ar','e-as'], d: '<code>/api/scan</code> sends the text + today\'s date to the LLM (Oxion) and gets JSON back. Zod checks it; <code>plan.ts</code> sets best-by dates; one application + its items are saved in Supabase.', f: 'app/api/scan/route.ts · lib/ai/* · lib/plan.ts' },
+    { n: 'Dashboard', on: ['n-browser','n-app','n-supa','e-ba','e-as'], d: '<code>/a/[id]</code> loads the application from Supabase on the server. Ticking an item PATCHes it and the UI updates instantly.', f: 'app/a/[id]/page.tsx · components/dashboard/* · app/api/items/[itemId]/route.ts' },
+    { n: 'Magic link', on: ['n-browser','n-app','n-supa','n-inbox','e-ba','e-as','e-si','e-ib'], d: 'You enter your email; Supabase emails a link. Clicking it hits <code>/auth/callback</code>, which starts your session and claims the application (reminders on).', f: 'components/dashboard/ReminderPanel.tsx · app/auth/callback/route.ts · lib/supabase/*' },
+    { n: 'Reminder', on: ['n-cron','n-app','n-supa','n-resend','n-inbox','e-ca','e-as','e-ae','e-ei'], d: 'Once a day Vercel Cron calls <code>/api/cron/daily</code>. It finds who is due, builds each email from unticked items, and sends via Resend. The demo button does the same for one application, right now.', f: 'app/api/cron/daily/route.ts · app/api/applications/[id]/remind-now/route.ts · lib/email/*' },
+    { n: 'Back from email', on: ['n-inbox','n-browser','n-app','e-ib','e-ba'], d: 'The email button opens <code>/a/[id]</code>. You\'re back where you stopped, on any device.', f: 'app/a/[id]/page.tsx' },
+    { n: 'Submit + follow-up', on: ['n-browser','n-app','n-supa','n-cron','n-resend','n-inbox','e-ba','e-as','e-ca','e-ae','e-ei'], d: 'Mark as submitted stops daily reminders. If you opt in, <code>follow_up_at</code> is set, and the daily cron sends exactly one follow-up when it\'s due.', f: 'components/dashboard/SubmitPanel.tsx · app/api/applications/[id]/route.ts' }
+  ];
+  const stepper = document.getElementById('stepper'), desc = document.getElementById('desc');
+  function show(i) {
+    const s = steps[i];
+    all.forEach(id => { const el = document.getElementById(id); el.classList.toggle('dim', !s.on.includes(id)); el.classList.toggle('hl', s.on.includes(id)); });
+    [...stepper.children].forEach((b, j) => b.setAttribute('aria-pressed', String(i === j)));
+    desc.innerHTML = `<p>${s.d}</p><div class="files">${s.f}</div>`;
+  }
+  steps.forEach((s, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = `${i + 1} · ${s.n}`; b.onclick = () => show(i); stepper.appendChild(b); });
+  show(0);
+  const root = document.documentElement, tg = document.getElementById('toggle');
+  tg.onclick = () => { const l = root.dataset.theme !== 'light'; root.dataset.theme = l ? 'light' : 'dark'; tg.textContent = l ? 'Switch to dark' : 'Switch to light'; };
+</script>
+</body>
+</html>
