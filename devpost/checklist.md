@@ -72,23 +72,23 @@ Build mode: fast
 ## Hands-on Checkpoints
 
 - [x] Early usable behavior explored — after slice 2 (dashboard look and plan quality, while there's time to change both). Feedback: section headings needed more visual hierarchy than body text → added SectionHeader with counts, stronger item titles, label/value key details (`2a7ee30`); learner confirmed it looks right.
-- [ ] Final kick-the-tires exploration and feedback completed
+- [x] Final kick-the-tires exploration and feedback completed — learner reviewed the live site (https://applyready-gamma.vercel.app); feedback rounds before sign-off: dashboard sidebar + balanced columns + delete, own SMTP magic links + adopt-by-email + sign out + logo + scan-box reset, email logo + accent wordmark, deliverability + spam hints, key details first on stacked layouts.
 
 ## Final Review
 
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Final review complete — feedback resolved and learner confirms ready to ship
 
 ## Code Tour and App Map
 
-- [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
-- [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
-- [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
+- [x] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
+- [x] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
+- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence:
-Route and stops:
-Edit outcome:
-Reflection:
-Activity mode:
+Activity and evidence: Focused alternative tied to the learning goal (how winners ship): the slice-1 planner revision — real fixtures exposed a false "tight" flag; fix in `lib/plan.ts` `buildPlan()`, pinned by `tests/plan.test.ts` "does not call a long plan tight…". Learner ran the test and described what it checks; discussed what a passing test proves (the decided behaviour) vs. what it doesn't (whether the overlap assumption is realistic, AI effort estimates, applicant experience).
+Route and stops: Reference route only (not toured): `components/landing/PasteBox.tsx` scan() → `app/api/scan/route.ts` POST → `lib/ai/extract.ts` / `lib/plan.ts` / `lib/db.ts` → `components/dashboard/Dashboard.tsx`.
+Edit outcome: Not applicable — no code edit; a possible refinement (flag tight when total effort exceeds ~2× days left) noted as a later product decision.
+Reflection: Covered by the exercise answer; no separate question.
+Activity mode: Focused alternative with the learner running the test suite.
 
 ## Revisions
 
