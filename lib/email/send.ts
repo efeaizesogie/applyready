@@ -3,6 +3,8 @@ import nodemailer, { type Transporter } from "nodemailer";
 import { Resend } from "resend";
 
 type Email = { subject: string; html: string; text: string };
+// Recurring mail (daily reminders, follow-ups) carries a List-Unsubscribe header, which Gmail and Yahoo expect from bulk senders.
+type Options = { unsubscribeUrl?: string };
 
 let smtp: Transporter | null = null;
 
@@ -18,7 +20,10 @@ function getSmtp() {
   return smtp;
 }
 
-export async function sendEmail(to: string, email: Email): Promise<string> {
+export async function sendEmail(to: string, email: Email, options: Options = {}): Promise<string> {
+  const headers: Record<string, string> = options.unsubscribeUrl
+    ? { "List-Unsubscribe": `<${options.unsubscribeUrl}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" }
+    : {};
   const transport = getSmtp();
   if (transport) {
     // Mail providers only let you send from the account you log in with, so the address is always
@@ -30,6 +35,7 @@ export async function sendEmail(to: string, email: Email): Promise<string> {
       subject: email.subject,
       html: email.html,
       text: email.text,
+      headers,
     });
     return info.messageId;
   }
@@ -42,6 +48,7 @@ export async function sendEmail(to: string, email: Email): Promise<string> {
     subject: email.subject,
     html: email.html,
     text: email.text,
+    headers,
   });
   if (error) throw new Error(error.message);
   return data!.id;

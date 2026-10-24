@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { getApplication } from "@/lib/db";
-import { reminderEmail } from "@/lib/email/templates";
+import { reminderEmail, unsubscribeUrl } from "@/lib/email/templates";
 import { sendEmail } from "@/lib/email/send";
 
 // Demo trigger: sends today's reminder immediately using the same builder as the daily cron.
@@ -14,7 +14,9 @@ export async function POST(request: Request, ctx: RouteContext<"/api/application
 
   const appUrl = process.env.APP_URL || new URL(request.url).origin;
   try {
-    const sentId = await sendEmail(app.email, reminderEmail(app, format(new Date(), "yyyy-MM-dd"), appUrl));
+    const sentId = await sendEmail(app.email, reminderEmail(app, format(new Date(), "yyyy-MM-dd"), appUrl), {
+      unsubscribeUrl: unsubscribeUrl(appUrl, app.id),
+    });
     return Response.json({ sent: true, id: sentId, to: app.email });
   } catch (err) {
     return Response.json(

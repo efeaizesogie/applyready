@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { applicationsDueFollowUp, applicationsDueReminder, stampApplication } from "@/lib/db";
-import { followUpEmail, reminderEmail } from "@/lib/email/templates";
+import { followUpEmail, reminderEmail, unsubscribeUrl } from "@/lib/email/templates";
 import { sendEmail } from "@/lib/email/send";
 
 // Vercel Cron calls this once a day (vercel.json) with `Authorization: Bearer $CRON_SECRET`.
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   // Each send is independent: one bad address must not stop everyone else's reminder.
   for (const app of await applicationsDueReminder(today)) {
     try {
-      await sendEmail(app.email!, reminderEmail(app, today, appUrl));
+      await sendEmail(app.email!, reminderEmail(app, today, appUrl), { unsubscribeUrl: unsubscribeUrl(appUrl, app.id) });
       await stampApplication(app.id, { last_reminder_at: now.toISOString() });
       result.reminders.sent++;
     } catch (err) {
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
   for (const app of await applicationsDueFollowUp(now.toISOString())) {
     try {
-      await sendEmail(app.email!, followUpEmail(app, appUrl));
+      await sendEmail(app.email!, followUpEmail(app, appUrl), { unsubscribeUrl: unsubscribeUrl(appUrl, app.id) });
       await stampApplication(app.id, { follow_up_sent: true });
       result.followUps.sent++;
     } catch (err) {

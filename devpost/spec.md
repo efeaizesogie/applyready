@@ -294,3 +294,6 @@ Replaces `signInWithOtp` + `/auth/callback` in `spec.md > Magic link (Supabase A
 
 ### Dashboard additions
 Left sidebar (compact New scan + My applications; empty with a sign-in link when signed out; Sign out when signed in), Writing guidance placed in the shorter column by estimated height, and `DELETE /api/applications/[id]` (unclaimed: capability link; claimed: owner session only). Favicon `app/icon.svg` and `LogoMark` share one mark: a ticked item on a list.
+
+### Deliverability
+Test emails from a personal Gmail landed in spam. Gmail SMTP already signs mail (DKIM for gmail.com), so the remaining signals are content and reputation: the sign-in email now uses specific, non-phishing wording ("Confirm your email for ApplyReady reminders") and shows the full link as text; reminder and follow-up emails carry `List-Unsubscribe` + `List-Unsubscribe-Post` (one-click, RFC 8058) pointing at `/api/applications/[id]/unsubscribe` (POST stops reminders; GET shows a confirmation page) plus a visible "Stop these reminders" footer link. Every "email sent" state in the UI tells the user to check spam/promotions and mark it "Not spam". Remaining levers, out of scope for the POC: deploying (public HTTPS links instead of localhost) and a custom sending domain with SPF/DKIM/DMARC.

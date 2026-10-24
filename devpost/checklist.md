@@ -107,3 +107,4 @@ Activity mode:
 - Magic links are now generated server-side (Supabase admin `generateLink`) and emailed by ApplyReady through the learner's own SMTP (Resend fallback) — the learner hit Supabase's built-in mailer rate limit; this also makes links work across browsers. Signing in adopts every application saved under that email; sign-out added; signed-out sidebar shows no applications.
 - Scan box resets on return to the landing page — Next 16 keeps hidden pages alive with React `<Activity>`, so the finished progress panel persisted; fixed per Next's preserving-UI-state guide (clear input in the submit handler, clear progress in a `useLayoutEffect` cleanup).
 - Logo and favicon added (`app/icon.svg`, `LogoMark`).
+- Emails were landing in spam: reworded the confirmation email, added one-click unsubscribe (header + footer link + endpoint), and spam-folder hints in the UI — `spec.md > Deliverability`. A sending domain with SPF/DKIM is the real fix, deferred.

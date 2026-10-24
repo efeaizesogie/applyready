@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SpamHint } from "@/components/dashboard/ReminderPanel";
 
 // Magic-link sign-in for returning users; lands back on /applications.
 export function SignInForm() {
@@ -26,9 +27,12 @@ export function SignInForm() {
 
   if (state === "sent") {
     return (
-      <p className="text-sm text-muted">
-        <b className="font-medium text-ink">Check your email.</b> Open the link we sent to {email} — it works on any device.
-      </p>
+      <div className="space-y-2 text-sm text-muted">
+        <p>
+          <b className="font-medium text-ink">Check your email.</b> Open the link we sent to {email} — it works on any device.
+        </p>
+        <SpamHint />
+      </div>
     );
   }
 

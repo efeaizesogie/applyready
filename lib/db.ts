@@ -204,6 +204,13 @@ export async function stampApplication(id: string, fields: { last_reminder_at?: 
   if (error) throw new Error(error.message);
 }
 
+export async function setRemindersEnabled(id: string, enabled: boolean) {
+  if (!isUuid(id)) return false;
+  const { data, error } = await createAdminClient().from("applications").update({ reminders_enabled: enabled }).eq("id", id).select("id").maybeSingle();
+  if (error) throw new Error(error.message);
+  return data !== null;
+}
+
 /** On sign-in: adopt applications saved under this email that no account owns yet. */
 export async function attachApplicationsByEmail(userId: string, email: string) {
   const { error } = await createAdminClient()

@@ -49,7 +49,7 @@ export function ReminderPanel({ applicationId, confirmedEmail, authStatus }: Pro
     setState("idle");
     setMessage(
       res?.ok
-        ? { tone: "ok", text: "Sent — check your inbox for today's reminder." }
+        ? { tone: "ok", text: "Sent — check your inbox for today's reminder (and your spam folder if it isn't there in a minute)." }
         : { tone: "crit", text: data?.message ?? "Couldn't send the reminder — try again." },
     );
   }
@@ -74,10 +74,13 @@ export function ReminderPanel({ applicationId, confirmedEmail, authStatus }: Pro
             </button>
           </>
         ) : state === "sent" ? (
-          <p className="text-muted">
-            <b className="font-medium text-ink">Check your email.</b> We sent a sign-in link to {email}. Open it on any device to turn
-            reminders on.
-          </p>
+          <div className="space-y-2 text-muted">
+            <p>
+              <b className="font-medium text-ink">Check your email.</b> We sent a confirmation link to {email}. Open it on any device to turn
+              reminders on.
+            </p>
+            <SpamHint />
+          </div>
         ) : (
           <form onSubmit={sendMagicLink}>
             <p className="text-muted">Get one email a day listing what&apos;s left, with a link back here. No password needed.</p>
@@ -101,5 +104,15 @@ export function ReminderPanel({ applicationId, confirmedEmail, authStatus }: Pro
         {message && <p className={`mt-3 text-[13px] ${message.tone === "ok" ? "text-ok" : "text-crit"}`}>{message.text}</p>}
       </div>
     </section>
+  );
+}
+
+// New senders often land in spam at first; one "Not spam" click teaches the inbox to trust us.
+export function SpamHint() {
+  return (
+    <p className="rounded-[6px] border border-line bg-bg px-3 py-2 text-[12px] leading-snug text-muted">
+      Not there after a minute? Check your <b className="font-medium text-ink">spam</b> or <b className="font-medium text-ink">promotions</b>{" "}
+      folder, and mark it <b className="font-medium text-ink">“Not spam”</b> so your daily reminders arrive in your inbox.
+    </p>
   );
 }

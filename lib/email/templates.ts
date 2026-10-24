@@ -31,18 +31,29 @@ function button(href: string, label: string) {
   return `<a href="${esc(href)}" style="display:inline-block;background:${C.accent};color:#F1EDE5;text-decoration:none;font-weight:600;font-size:14px;padding:11px 18px;border-radius:6px">${esc(label)}</a>`;
 }
 
+export const unsubscribeUrl = (appUrl: string, id: string) => `${appUrl}/api/applications/${id}/unsubscribe`;
+
+function reminderFooter(appUrl: string, id: string) {
+  return `You're getting this because you turned on reminders for this application in ApplyReady. <a href="${esc(unsubscribeUrl(appUrl, id))}" style="color:${C.muted}">Stop these reminders</a>`;
+}
+
 const daysText = (n: number) => (n === 0 ? "due today" : `${n} ${n === 1 ? "day" : "days"} left`);
 
 export function magicLinkEmail(link: string) {
-  const subject = "Your ApplyReady sign-in link";
+  // Plain, specific wording and the full link in text: "sign in" + a lone button is the classic phishing
+  // shape that spam filters score against.
+  const subject = "Confirm your email for ApplyReady reminders";
   const html = layout(
-    "Confirm your email to turn on reminders.",
+    "One click to start your daily application reminders.",
     `<h1 style="margin:0 0 8px;font-size:20px;line-height:1.3">Confirm your email</h1>
-<p style="margin:0 0 20px;font-size:14px;color:${C.muted}">Click below to sign in. Your applications will be saved under this email and daily reminders will turn on. The link works once and expires in an hour.</p>
-${button(link, "Sign in to ApplyReady")}`,
+<p style="margin:0 0 20px;font-size:14px;color:${C.muted}">You asked ApplyReady to send you daily reminders about your applications. Confirm this address to save your applications under it and turn reminders on. The link works once and expires in an hour.</p>
+${button(link, "Confirm my email")}
+<p style="margin:20px 0 0;font-size:12px;color:${C.muted}">Or paste this link into your browser:<br><span style="word-break:break-all;color:${C.ink}">${esc(link)}</span></p>`,
     "If you didn't ask for this, you can ignore it — nothing happens unless the link is clicked.",
   );
-  const text = `Sign in to ApplyReady (works once, expires in an hour):
+  const text = `Confirm your email for ApplyReady reminders
+
+You asked ApplyReady to send you daily reminders about your applications. Open this link to confirm (works once, expires in an hour):
 ${link}
 
 If you didn't ask for this, ignore this email.`;
@@ -64,8 +75,9 @@ export function followUpEmail(app: Application, appUrl: string) {
 <li>Restate in one line why you're a strong fit.</li>
 <li>Ask whether they need anything else from you.</li></ul>
 ${button(link, "Open the application")}`,
+    reminderFooter(appUrl, app.id),
   );
-  const text = `${app.title}\nYou submitted this on ${submitted}. If you haven't heard back, send ${who} a short follow-up: reference the name and date, restate your fit in one line, and ask if they need anything else.\n\n${link}`;
+  const text = `${app.title}\nYou submitted this on ${submitted}. If you haven't heard back, send ${who} a short follow-up: reference the name and date, restate your fit in one line, and ask if they need anything else.\n\n${link}\n\nStop these reminders: ${unsubscribeUrl(appUrl, app.id)}`;
   return { subject, html, text };
 }
 
@@ -99,6 +111,7 @@ ${when ? `<div style="font-size:12px;color:${late ? C.crit : C.muted}">${when}</
 <p style="margin:0 0 16px;font-size:14px;color:${C.muted}">${intro}</p>
 ${rows ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px">${rows}</table>` : ""}
 ${button(link, "Continue where you stopped")}`,
+    reminderFooter(appUrl, app.id),
   );
 
   const text = [
@@ -108,6 +121,8 @@ ${button(link, "Continue where you stopped")}`,
     ...remaining.map((i) => `[ ] ${i.title}${i.bestBy ? ` (best by ${i.bestBy}${isOverdue(i.bestBy, i.done, today) ? ", overdue" : ""})` : ""}`),
     "",
     `Continue where you stopped: ${link}`,
+    "",
+    `Stop these reminders: ${unsubscribeUrl(appUrl, app.id)}`,
   ].join("\n");
 
   return { subject, html, text };
