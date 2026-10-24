@@ -1,5 +1,7 @@
 # ApplyReady
 
+**Live:** https://applyready-gamma.vercel.app
+
 **Every application, shortlist-ready.** Paste a scholarship, job, admission or grant announcement. ApplyReady pulls out every requirement, ranks what matters, plans each step back from the deadline, and emails you every day until you've submitted — then reminds you to follow up.
 
 Built for graduates juggling many applications who don't miss opportunities because they can't *find* them, but because essays, documents and lead time slip. A chat answer goes quiet once you close it; ApplyReady keeps reminding you.

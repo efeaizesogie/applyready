@@ -59,7 +59,7 @@ Build mode: fast
   Learner check: Open the landing page in both themes, paste a real link, watch the progress stages, and try one link that's likely blocked (e.g. a LinkedIn job).
   Commit: `Add landing page, scan progress, link fetching, and theme toggle`
 
-- [ ] **6. Live on Vercel with daily reminders running**
+- [x] **6. Live on Vercel with daily reminders running**
   Becomes usable: A public URL friends can open, with the cron job scheduled, plus a README and MIT LICENSE ready for the public repo.
   Why now: Deployment depends on everything above; doing it last keeps local iteration fast, and it still leaves time for final review and the video.
   PRD ref: `prd.md > The Core Journey`
@@ -108,3 +108,4 @@ Activity mode:
 - Scan box resets on return to the landing page — Next 16 keeps hidden pages alive with React `<Activity>`, so the finished progress panel persisted; fixed per Next's preserving-UI-state guide (clear input in the submit handler, clear progress in a `useLayoutEffect` cleanup).
 - Logo and favicon added (`app/icon.svg`, `LogoMark`).
 - Emails were landing in spam: reworded the confirmation email, added one-click unsubscribe (header + footer link + endpoint), and spam-folder hints in the UI — `spec.md > Deliverability`. A sending domain with SPF/DKIM is the real fix, deferred.
+- Deployed to https://applyready-gamma.vercel.app (public repo https://github.com/efeaizesogie/applyready). Supabase redirect URLs no longer need configuring: magic links are our own `/auth/confirm` links built from `APP_URL`, using only Supabase's hashed token. `vercel link` appended a duplicate `.env*` rule that re-ignored `.env.example`; reverted.
