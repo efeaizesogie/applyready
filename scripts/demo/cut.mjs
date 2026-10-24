@@ -9,15 +9,23 @@ const D = "demo-out";
 const BG = "0x212227";
 const FONT = "C\\:/Windows/Fonts/segoeui.ttf";
 
-// [file, start, end, speed, kind]. "app" clips are 1920x1080; "inbox" clips are 1920x1032 screen
-// recordings, cropped left of Gmail's Quick settings panel and centred on the app background.
+// [file, start, end, speed, kind]. "app" clips are 1920x1080 already. The learner's 1920x1032 screen
+// recordings are cropped to an exact 16:9 window that drops the browser's tab/address bar (top 88px):
+// "inbox" keeps Gmail left of its scrollbar and Quick settings panel; "inboxApp" is the wider crop
+// for the moment the recording lands back on the ApplyReady dashboard.
+const CROPS = {
+  app: "scale=1920:1080",
+  inbox: "crop=1515:852:0:88,scale=1920:1080:flags=lanczos",
+  inboxApp: "crop=1678:944:121:88,scale=1920:1080:flags=lanczos",
+};
 const SEGMENTS = [
   ["clip-1.webm", 1.0, 9.0, 1, "app"], // landing → paste
   ["clip-1.webm", 9.0, 23.0, 2, "app"], // scan progress, 2×
   ["clip-1.webm", 23.0, 37.0, 1, "app"], // dashboard tour
   ["clip-1.webm", 37.0, 67.6, 1, "app"], // email → confirmed → tick 2 → send now
   ["user-clip-1.mp4", 0.0, 2.5, 1, "inbox"], // inbox list
-  ["user-clip-1.mp4", 12.5, 22.0, 1, "inbox"], // reminder (9 left) → Continue → dashboard
+  ["user-clip-1.mp4", 12.5, 17.2, 1, "inbox"], // reminder (9 left) → click Continue
+  ["user-clip-1.mp4", 18.6, 22.0, 1, "inboxApp"], // lands back on the dashboard (blank new tab cut)
   ["clip-2.webm", 1.5, 8.0, 1, "app"], // My applications
   ["clip-2.webm", 8.0, 25.0, 1, "app"], // tick 3 → send again
   ["user-clip-2.mp4", 4.5, 12.0, 1, "inbox"], // new reminder: 6 left
@@ -28,10 +36,7 @@ const inputs = [];
 const filters = [];
 SEGMENTS.forEach(([file, start, end, speed, kind], i) => {
   inputs.push("-i", `${D}/${file}`);
-  const shape =
-    kind === "inbox"
-      ? `crop=1546:1032:0:0,scale=-2:1080,pad=1920:1080:(ow-iw)/2:0:color=${BG}`
-      : "scale=1920:1080";
+  const shape = CROPS[kind];
   filters.push(
     `[${i}:v]trim=start=${start}:end=${end},setpts=(PTS-STARTPTS)/${speed},${shape},fps=30,format=yuv420p,setsar=1[v${i}]`,
   );
