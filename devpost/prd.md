@@ -98,6 +98,12 @@ Source: `scope.md > The Core Loop` step 4.
 
 ### My applications
 - Lists all applications for the confirmed email with status, deadline, days left, progress.
+- The dashboard has a left sidebar with a compact **New scan** box and the same list (current one highlighted), so a new application can be started without leaving the page. *(Added at learner request after slice 5.)*
+
+### Deleting an application
+- **Delete this application…** at the bottom of the dashboard, with an inline confirmation. Removes the application and its checklist and stops all its emails. Once linked to an email, only that signed-in user can delete it. *(Added at learner request after slice 5, for scans made in error.)*
+- [ ] Deleting removes the application, its checklist items, and its page (404).
+- [ ] A linked application can't be deleted without the owner's session.
 - [ ] Every scanned and saved application appears with correct status and progress.
 
 ## States and Boundaries

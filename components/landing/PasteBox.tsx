@@ -7,7 +7,7 @@ import { ScanProgress, type Stage } from "@/components/scan/ScanProgress";
 const URL_ONLY = /^https?:\/\/\S+$/i;
 const READ_STAGES = ["Reading requirements", "Finding the deadline", "Building your plan"];
 
-export function PasteBox() {
+export function PasteBox({ compact = false }: { compact?: boolean }) {
   const router = useRouter();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [input, setInput] = useState("");
@@ -101,8 +101,8 @@ export function PasteBox() {
   const busy = stages !== null;
 
   return (
-    <div className="mx-auto w-full max-w-2xl text-left">
-      <div className="rounded-[12px] border border-line bg-surface p-2 shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
+    <div className={`w-full text-left ${compact ? "" : "mx-auto max-w-2xl"}`}>
+      <div className={`rounded-[12px] border border-line bg-surface ${compact ? "p-1.5" : "p-2 shadow-[0_12px_40px_rgba(0,0,0,0.18)]"}`}>
         {busy ? (
           <ScanProgress stages={stages} />
         ) : (
@@ -114,18 +114,18 @@ export function PasteBox() {
               onKeyDown={(e) => {
                 if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && input.trim()) scan();
               }}
-              placeholder="Paste a link or the full announcement text…"
+              placeholder={compact ? "Paste a link or text…" : "Paste a link or the full announcement text…"}
               aria-label="Announcement link or text"
-              rows={3}
-              className="max-h-72 min-h-20 w-full resize-y bg-transparent px-3 py-2.5 text-[15px] text-ink outline-none placeholder:text-faint"
+              rows={compact ? 2 : 3}
+              className={`w-full resize-y bg-transparent text-ink outline-none placeholder:text-faint ${compact ? "max-h-48 min-h-14 px-2.5 py-2 text-[13px]" : "max-h-72 min-h-20 px-3 py-2.5 text-[15px]"}`}
             />
             <div className="flex items-center justify-between gap-3 pl-3">
-              <span className="text-xs text-faint">{isUrl ? "Link detected — we'll read the page" : "Scholarships · jobs · admissions · grants"}</span>
+              <span className="text-xs text-faint">{isUrl ? (compact ? "Link detected" : "Link detected — we'll read the page") : compact ? "" : "Scholarships · jobs · admissions · grants"}</span>
               <button
                 type="button"
                 onClick={scan}
                 disabled={!isUrl && input.trim().length < 40}
-                className="rounded-[6px] bg-accent px-4 py-2 text-sm font-medium text-on-accent transition-opacity disabled:opacity-40"
+                className={`rounded-[6px] bg-accent font-medium text-on-accent transition-opacity disabled:opacity-40 ${compact ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm"}`}
               >
                 Scan →
               </button>

@@ -103,3 +103,4 @@ Activity mode:
 - `/a/[id]` and `/applications` call `connection()` before using today's date — Next 16 Cache Components flagged `Date.now()` during prerender.
 - Link fetching refuses private/loopback addresses (DNS-resolved) — the server fetches user-supplied URLs, so without this anyone could make it probe internal networks (SSRF); not in the spec's Page fetcher.
 - Nav moved into the root layout so every page has the logo, My applications and the theme toggle.
+- Learner feedback before deploy: dashboard gained a left sidebar (compact New scan + My applications), a balanced two-column layout (Writing guidance goes in the shorter column based on content), and Delete application with owner check — PRD `My applications` and new `Deleting an application` updated.

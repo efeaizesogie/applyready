@@ -204,6 +204,12 @@ export async function stampApplication(id: string, fields: { last_reminder_at?: 
   if (error) throw new Error(error.message);
 }
 
+/** Checklist items go with it (on delete cascade). */
+export async function deleteApplication(id: string) {
+  const { error } = await createAdminClient().from("applications").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
 /** Attaches an application to a confirmed email and turns reminders on. Won't steal one another user already owns. */
 export async function claimApplication(id: string, userId: string, email: string) {
   const { data, error } = await createAdminClient()
