@@ -44,3 +44,4 @@ next-env.d.ts
 /devpost/learner-profile.md
 !.env.example
 /scratch/
+/demo-out/
