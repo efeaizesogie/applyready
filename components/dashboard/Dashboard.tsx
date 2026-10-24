@@ -2,6 +2,8 @@ import { differenceInCalendarDays, format, parseISO } from "date-fns";
 import type { Application } from "@/lib/db";
 import { Checklist } from "./Checklist";
 import { ReminderPanel } from "./ReminderPanel";
+import { SubmitPanel } from "./SubmitPanel";
+import Link from "next/link";
 import { Chip, ImportanceTag, SectionHeader } from "@/components/ui/Tag";
 
 const TYPE_LABEL: Record<Application["type"], string> = {
@@ -24,7 +26,10 @@ export function Dashboard({ app, today, authStatus }: { app: Application; today:
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-8">
       <p className="text-xs text-faint">
-        My applications / <span className="font-mono">{app.id.slice(0, 8)}</span>
+        <Link href="/applications" className="hover:text-muted">
+          My applications
+        </Link>{" "}
+        / <span className="font-mono">{app.id.slice(0, 8)}</span>
       </p>
 
       <div className="mt-2 flex flex-wrap items-start justify-between gap-4">
@@ -69,10 +74,20 @@ export function Dashboard({ app, today, authStatus }: { app: Application; today:
         </div>
 
         <div className="space-y-4 lg:mt-5">
-          <ReminderPanel
+          {app.status === "in_progress" && (
+            <ReminderPanel
+              applicationId={app.id}
+              confirmedEmail={app.remindersEnabled && app.email ? maskEmail(app.email) : null}
+              authStatus={authStatus}
+            />
+          )}
+          <SubmitPanel
             applicationId={app.id}
-            confirmedEmail={app.remindersEnabled && app.email ? maskEmail(app.email) : null}
-            authStatus={authStatus}
+            status={app.status}
+            submittedAt={app.submittedAt}
+            followUpAt={app.followUpAt}
+            followUpSent={app.followUpSent}
+            allDone={app.items.length > 0 && app.items.every((i) => i.done)}
           />
 
           <section className="rounded-[12px] border border-line bg-surface">

@@ -24,6 +24,26 @@ function button(href: string, label: string) {
 
 const daysText = (n: number) => (n === 0 ? "due today" : `${n} ${n === 1 ? "day" : "days"} left`);
 
+export function followUpEmail(app: Application, appUrl: string) {
+  const link = `${appUrl}/a/${app.id}`;
+  const submitted = app.submittedAt ? format(parseISO(app.submittedAt), "MMM d") : "a while ago";
+  const who = app.organization ?? "the organisers";
+  const subject = `Time to follow up · ${app.title}`;
+  const html = layout(
+    `No reply yet? A short follow-up to ${who} helps.`,
+    `<div style="font-size:12px;color:${C.muted};text-transform:uppercase;letter-spacing:.06em">Follow-up reminder</div>
+<h1 style="margin:6px 0 8px;font-size:20px;line-height:1.3">${esc(app.title)}</h1>
+<p style="margin:0 0 12px;font-size:14px;color:${C.muted}">You submitted this on <b style="color:${C.ink}">${submitted}</b>. If you haven't heard back, now is a good time to send ${esc(who)} a short, polite follow-up.</p>
+<ul style="margin:0 0 20px;padding-left:18px;font-size:14px;color:${C.muted}">
+<li>Reference the exact role or scholarship name and your submission date.</li>
+<li>Restate in one line why you're a strong fit.</li>
+<li>Ask whether they need anything else from you.</li></ul>
+${button(link, "Open the application")}`,
+  );
+  const text = `${app.title}\nYou submitted this on ${submitted}. If you haven't heard back, send ${who} a short follow-up: reference the name and date, restate your fit in one line, and ask if they need anything else.\n\n${link}`;
+  return { subject, html, text };
+}
+
 export function reminderEmail(app: Application, today: string, appUrl: string) {
   const link = `${appUrl}/a/${app.id}`;
   const daysLeft = app.deadline ? differenceInCalendarDays(parseISO(app.deadline), parseISO(today)) : null;

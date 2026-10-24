@@ -151,6 +151,59 @@ export async function getApplication(id: string): Promise<Application | null> {
   return data ? toApplication(data as ApplicationRow) : null;
 }
 
+export async function markSubmitted(id: string, followUpAt: string | null) {
+  if (!isUuid(id)) return null;
+  const { data, error } = await createAdminClient()
+    .from("applications")
+    .update({ status: "submitted", submitted_at: new Date().toISOString(), follow_up_at: followUpAt, follow_up_sent: false })
+    .eq("id", id)
+    .select("id, status, submitted_at, follow_up_at")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function listApplicationsForUser(userId: string): Promise<Application[]> {
+  const { data, error } = await createAdminClient()
+    .from("applications")
+    .select("*, checklist_items(*)")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data as ApplicationRow[]).map(toApplication);
+}
+
+/** In-progress, confirmed applications not yet reminded today and not past their deadline. */
+export async function applicationsDueReminder(today: string): Promise<Application[]> {
+  const { data, error } = await createAdminClient()
+    .from("applications")
+    .select("*, checklist_items(*)")
+    .eq("status", "in_progress")
+    .eq("reminders_enabled", true)
+    .not("email", "is", null)
+    .or(`deadline.is.null,deadline.gte.${today}`)
+    .or(`last_reminder_at.is.null,last_reminder_at.lt.${today}T00:00:00Z`);
+  if (error) throw new Error(error.message);
+  return (data as ApplicationRow[]).map(toApplication);
+}
+
+export async function applicationsDueFollowUp(now: string): Promise<Application[]> {
+  const { data, error } = await createAdminClient()
+    .from("applications")
+    .select("*, checklist_items(*)")
+    .eq("status", "submitted")
+    .eq("follow_up_sent", false)
+    .not("email", "is", null)
+    .lte("follow_up_at", now);
+  if (error) throw new Error(error.message);
+  return (data as ApplicationRow[]).map(toApplication);
+}
+
+export async function stampApplication(id: string, fields: { last_reminder_at?: string; follow_up_sent?: boolean }) {
+  const { error } = await createAdminClient().from("applications").update(fields).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
 /** Attaches an application to a confirmed email and turns reminders on. Won't steal one another user already owns. */
 export async function claimApplication(id: string, userId: string, email: string) {
   const { data, error } = await createAdminClient()

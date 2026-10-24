@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { format } from "date-fns";
 import { getApplication } from "@/lib/db";
 import { Dashboard } from "@/components/dashboard/Dashboard";
@@ -7,6 +8,7 @@ import { Dashboard } from "@/components/dashboard/Dashboard";
 type Props = PageProps<"/a/[id]">;
 
 async function ApplicationDashboard({ params, searchParams }: Pick<Props, "params" | "searchParams">) {
+  await connection(); // countdown and overdue flags depend on today's date
   const [{ id }, query] = await Promise.all([params, searchParams]);
   const app = await getApplication(id);
   if (!app) notFound();
