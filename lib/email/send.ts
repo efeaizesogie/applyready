@@ -21,8 +21,11 @@ function getSmtp() {
 export async function sendEmail(to: string, email: Email): Promise<string> {
   const transport = getSmtp();
   if (transport) {
+    // Mail providers only let you send from the account you log in with, so the address is always
+    // SMTP_USER; the display name comes from EMAIL_FROM ("ApplyReady <…>") and defaults to ApplyReady.
+    const name = process.env.EMAIL_FROM?.split("<")[0].trim().replace(/^"|"$/g, "") || "ApplyReady";
     const info = await transport.sendMail({
-      from: process.env.EMAIL_FROM || process.env.SMTP_USER,
+      from: { name, address: process.env.SMTP_USER! },
       to,
       subject: email.subject,
       html: email.html,
