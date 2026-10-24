@@ -19,7 +19,7 @@ Build mode: fast
   Learner check: Run `npm run dev`, open http://localhost:3000, paste a real scholarship or job post, click Scan, and say whether the requirements, ranking, and best-by dates look right to you.
   Commit: `Extract a ranked, dated plan from a pasted announcement`
 
-- [ ] **2. Each scan becomes a saved, styled dashboard you can tick off**
+- [x] **2. Each scan becomes a saved, styled dashboard you can tick off**
   Becomes usable: Scanning saves the application to Supabase and opens `/a/[id]`: header with countdown, progress bar, colour-coded key details, guidance, and a checklist whose ticks survive reload. Shows the no-deadline and tight-deadline banners.
   Why now: The dashboard is the main surface in the demo and the thing reminders link to; it also proves the data model before email depends on it.
   PRD ref: `prd.md > Checklist and progress`, `prd.md > Screens and Layout`, `prd.md > Look and Feel`
