@@ -1,7 +1,7 @@
 import { differenceInCalendarDays, format, parseISO } from "date-fns";
 import type { Application } from "@/lib/db";
 import { Checklist } from "./Checklist";
-import { Chip, ImportanceTag } from "@/components/ui/Tag";
+import { Chip, ImportanceTag, SectionHeader } from "@/components/ui/Tag";
 
 const TYPE_LABEL: Record<Application["type"], string> = {
   scholarship: "Scholarship",
@@ -63,13 +63,13 @@ export function Dashboard({ app, today }: { app: Application; today: string }) {
 
         <div className="space-y-4 lg:mt-5">
           <section className="rounded-[12px] border border-line bg-surface">
-            <header className="border-b border-line px-4 py-3 text-sm font-medium">Key details</header>
+            <SectionHeader title="Key details" count={app.keyDetails.length} />
             <ul>
               {app.keyDetails.map((d) => (
-                <li key={d.label} className="flex items-start justify-between gap-3 border-t border-line px-4 py-2.5 first:border-t-0">
-                  <span className="text-sm">
-                    <span className="block font-medium">{d.label}</span>
-                    <span className="block text-muted">{d.value}</span>
+                <li key={d.label} className="flex items-start justify-between gap-3 border-t border-line px-4 py-3 first:border-t-0">
+                  <span>
+                    <span className="block text-[11px] font-medium uppercase tracking-[0.06em] text-faint">{d.label}</span>
+                    <span className="mt-0.5 block text-sm text-ink">{d.value}</span>
                   </span>
                   <ImportanceTag level={d.importance} />
                 </li>
@@ -79,14 +79,14 @@ export function Dashboard({ app, today }: { app: Application; today: string }) {
 
           {app.guidance.length > 0 && (
             <section className="rounded-[12px] border border-line bg-surface">
-              <header className="border-b border-line px-4 py-3 text-sm font-medium">Writing guidance</header>
+              <SectionHeader title="Writing guidance" count={app.guidance.length} />
               {app.guidance.map((g) => (
                 <div key={g.piece} className="border-t border-line px-4 py-3 first:border-t-0">
-                  <p className="text-sm font-medium">
-                    {g.piece}
-                    {g.wordLimit && <span className="font-normal text-muted"> · {g.wordLimit}</span>}
+                  <p className="flex items-baseline justify-between gap-3">
+                    <span className="text-sm font-semibold text-ink">{g.piece}</span>
+                    {g.wordLimit && <span className="shrink-0 text-xs text-faint">{g.wordLimit}</span>}
                   </p>
-                  <ul className="mt-1 list-disc space-y-1 pl-4 text-sm text-muted">
+                  <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[13px] leading-snug text-muted marker:text-faint">
                     {g.points.map((p) => (
                       <li key={p}>{p}</li>
                     ))}

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { format, parseISO } from "date-fns";
 import type { ChecklistItem } from "@/lib/db";
 import { isOverdue, sortForDisplay } from "@/lib/plan";
-import { ImportanceTag } from "@/components/ui/Tag";
+import { ImportanceTag, SectionHeader } from "@/components/ui/Tag";
 
 const prettyDate = (d: string) => format(parseISO(d), "MMM d");
 
@@ -48,9 +48,7 @@ export function Checklist({ items: initial, today }: { items: ChecklistItem[]; t
       </div>
 
       <section className="mt-5 rounded-[12px] border border-line bg-surface">
-        <header className="flex items-center justify-between border-b border-line px-4 py-3 text-sm font-medium">
-          Checklist <span className="font-normal text-faint">ranked by importance · tick when done</span>
-        </header>
+        <SectionHeader title="Checklist" count={items.length} hint="Ranked by importance · tick when done" />
         {error && <p className="border-b border-line px-4 py-2 text-sm text-crit">{error}</p>}
         <ul>
           {sortForDisplay(items).map((item) => {
@@ -73,10 +71,10 @@ export function Checklist({ items: initial, today }: { items: ChecklistItem[]; t
                     )}
                   </span>
                   <span>
-                    <span className={`block text-sm ${item.done ? "text-faint line-through" : ""}`}>{item.title}</span>
-                    {item.detail && !item.done && <span className="block text-xs text-muted">{item.detail}</span>}
+                    <span className={`block text-sm font-medium ${item.done ? "text-faint line-through" : "text-ink"}`}>{item.title}</span>
+                    {item.detail && !item.done && <span className="mt-0.5 block text-[13px] leading-snug text-muted">{item.detail}</span>}
                     {item.bestBy && (
-                      <span className={`block text-xs ${late ? "text-crit" : "text-muted"}`}>
+                      <span className={`mt-1 block text-xs ${late ? "font-medium text-crit" : "text-faint"}`}>
                         Best by {prettyDate(item.bestBy)}
                         {late && " · overdue"}
                       </span>
