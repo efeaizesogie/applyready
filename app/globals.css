@@ -73,3 +73,8 @@ body {
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: 64px 64px;
 }
+
+/* Theme toggle: show the icon for the theme you'd switch to. */
+.theme-icon-moon { display: none; }
+[data-theme="light"] .theme-icon-sun { display: none; }
+[data-theme="light"] .theme-icon-moon { display: block; }
