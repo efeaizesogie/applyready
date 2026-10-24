@@ -9,7 +9,7 @@ Build mode: fast
 
 ## Slices
 
-- [ ] **1. Paste an announcement and see the AI-built plan on screen**
+- [x] **1. Paste an announcement and see the AI-built plan on screen**
   Becomes usable: A running Next.js app where pasting announcement text and clicking Scan shows the extracted title, deadline, ranked key details, guidance, and a checklist with best-by dates. Nothing is saved yet.
   Why now: The extraction is the riskiest unknown (Oxion model choice, JSON reliability) and the heart of the kernel; proving it first means every later slice builds on real output.
   PRD ref: `prd.md > Extraction and the plan`, `prd.md > States and Boundaries`
@@ -94,3 +94,5 @@ Activity mode:
 
 - Model id chosen from the key's live `/models` list (33 models) rather than docs — Oxion's docs list no ids; `scripts/list-models.mts` added.
 - Extraction surfaces 503/429 as "busy or briefly down for maintenance" — during slice 1 Oxion returned `service_upgrading` 503 for every model; at the learner's request this became automatic failover to River (`LLM_FALLBACK_*`) in `lib/ai/extract.ts`; spec updated under the LLM gateway section and Important Failure Modes.
+- Planner spaces items evenly across the time left and only pushes an item later for lead time, instead of packing efforts end to end — real fixture runs showed 11 overlapping tasks (50 effort-days) falsely flagged "tight" with 42 days left; spec `Planner` intent (backward from deadline, code owns dates) unchanged.
+- Fallback model set to River `deepseek-ai/DeepSeek-V4.1-Flash` (6–9s, all fixtures correct; GLM-5.3-Flash was 21–29s). Oxion primary model is provisionally `gemini-3.7-flash`; its quality couldn't be compared yet because Oxion kept returning 503 — re-run `scripts/try-extract.mts` when it's stable.
