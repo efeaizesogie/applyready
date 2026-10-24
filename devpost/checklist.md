@@ -49,7 +49,7 @@ Build mode: fast
   Learner check: Mark an application submitted, choose a follow-up, open My applications and check the statuses look right.
   Commit: `Add submit, follow-up, daily cron, and My applications`
 
-- [ ] **5. The landing page, scan progress, and pasting a link**
+- [x] **5. The landing page, scan progress, and pasting a link**
   Becomes usable: The Kariiya-style landing hero with the paste box, staged scan progress, link fetching with the blocked-link fallback, nav with My applications, and the dark/light toggle.
   Why now: The first impression for judges, built once the product underneath works; link fetch sits last because paste-text already covers the journey (it's the first thing to trim if time runs out).
   PRD ref: `prd.md > Input and scanning`, `prd.md > Screens and Layout`, `prd.md > Look and Feel`
@@ -101,3 +101,5 @@ Activity mode:
 - Remind-now doesn't stamp `last_reminder_at`, so a demo send never suppresses that day's real cron reminder.
 - Daily reminders also stop once an application's deadline has passed (cron filter `deadline >= today`) — the PRD only said they stop on submit, but reminding about a closed application is noise.
 - `/a/[id]` and `/applications` call `connection()` before using today's date — Next 16 Cache Components flagged `Date.now()` during prerender.
+- Link fetching refuses private/loopback addresses (DNS-resolved) — the server fetches user-supplied URLs, so without this anyone could make it probe internal networks (SSRF); not in the spec's Page fetcher.
+- Nav moved into the root layout so every page has the logo, My applications and the theme toggle.
