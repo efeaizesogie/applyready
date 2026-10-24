@@ -38,6 +38,22 @@ function guidanceGoesLeft(app: Application) {
 
 export function Dashboard({ app, today, authStatus, myApplications }: Props) {
   const guidanceLeft = guidanceGoesLeft(app);
+  const keyDetails = (
+    <section className="rounded-[12px] border border-line bg-surface">
+      <SectionHeader title="Key details" count={app.keyDetails.length} />
+      <ul>
+        {app.keyDetails.map((d) => (
+          <li key={d.label} className="flex items-start justify-between gap-3 border-t border-line px-4 py-3 first:border-t-0">
+            <span>
+              <span className="block text-[11px] font-medium uppercase tracking-[0.06em] text-faint">{d.label}</span>
+              <span className="mt-0.5 block text-sm text-ink">{d.value}</span>
+            </span>
+            <ImportanceTag level={d.importance} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
   const guidance = app.guidance.length > 0 && (
     <section className="rounded-[12px] border border-line bg-surface">
       <SectionHeader title="Writing guidance" count={app.guidance.length} />
@@ -114,6 +130,9 @@ export function Dashboard({ app, today, authStatus, myApplications }: Props) {
         {/* Long reading content (checklist + guidance) on the left, short actions + facts on the right, so the columns end level. */}
         <div className="mt-2 grid items-start gap-4 xl:grid-cols-[1.35fr_1fr]">
           <div className="space-y-4">
+            {/* Stacked (single-column) layouts read the facts first; on desktop they stay in the right column. */}
+            <div className="mt-3 xl:hidden">{keyDetails}</div>
+
             <Checklist items={app.items} today={today} />
 
             {guidanceLeft && guidance}
@@ -136,20 +155,7 @@ export function Dashboard({ app, today, authStatus, myApplications }: Props) {
               allDone={app.items.length > 0 && app.items.every((i) => i.done)}
             />
 
-            <section className="rounded-[12px] border border-line bg-surface">
-              <SectionHeader title="Key details" count={app.keyDetails.length} />
-              <ul>
-                {app.keyDetails.map((d) => (
-                  <li key={d.label} className="flex items-start justify-between gap-3 border-t border-line px-4 py-3 first:border-t-0">
-                    <span>
-                      <span className="block text-[11px] font-medium uppercase tracking-[0.06em] text-faint">{d.label}</span>
-                      <span className="mt-0.5 block text-sm text-ink">{d.value}</span>
-                    </span>
-                    <ImportanceTag level={d.importance} />
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <div className="hidden xl:block">{keyDetails}</div>
 
             {!guidanceLeft && guidance}
 
