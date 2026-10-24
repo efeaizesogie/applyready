@@ -29,7 +29,7 @@ Build mode: fast
   Learner check: Scan an announcement, land on its dashboard, tick two items, refresh the page, and tell me how the dashboard looks and feels compared to the style preview.
   Commit: `Save scans and add the application dashboard`
 
-- [ ] **3. A real reminder email lands in your inbox and links back**
+- [x] **3. A real reminder email lands in your inbox and links back**
   Becomes usable: Enter your email on the dashboard → magic link arrives → clicking it confirms and turns reminders on → "Send today's reminder now" delivers an email listing exactly the unticked items and days left, whose button opens the dashboard.
   Why now: This is the kernel and the demo's "oh, that's useful" moment; it lands before anything cosmetic.
   PRD ref: `prd.md > Email and magic link`, `prd.md > Daily reminders`
@@ -96,3 +96,6 @@ Activity mode:
 - Extraction surfaces 503/429 as "busy or briefly down for maintenance" — during slice 1 Oxion returned `service_upgrading` 503 for every model; at the learner's request this became automatic failover to River (`LLM_FALLBACK_*`) in `lib/ai/extract.ts`; spec updated under the LLM gateway section and Important Failure Modes.
 - Planner spaces items evenly across the time left and only pushes an item later for lead time, instead of packing efforts end to end — real fixture runs showed 11 overlapping tasks (50 effort-days) falsely flagged "tight" with 42 days left; spec `Planner` intent (backward from deadline, code owns dates) unchanged.
 - Fallback model set to River `deepseek-ai/DeepSeek-V4.1-Flash` (6–9s, all fixtures correct; GLM-5.3-Flash was 21–29s). Oxion primary model is provisionally `gemini-3.7-flash`; its quality couldn't be compared yet because Oxion kept returning 503 — re-run `scripts/try-extract.mts` when it's stable.
+- Checklist ticks stay authorised by the private dashboard link only, not also by the owning session as `spec.md > Item + application updates` said — email links are meant to work on any device without signing in, and requiring a session there would break that; the masked email on the page limits what a link-holder learns.
+- Added `proxy.ts` (Next 16's renamed middleware) to refresh the Supabase session cookie on `/a/*` and `/applications`, which `@supabase/ssr` requires but the spec didn't list.
+- Remind-now doesn't stamp `last_reminder_at`, so a demo send never suppresses that day's real cron reminder.
