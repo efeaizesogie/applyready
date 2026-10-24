@@ -1,14 +1,21 @@
 import Link from "next/link";
 import { ThemeToggle } from "./ThemeToggle";
 
+// The mark: a ticked item on a list. Same shape as app/icon.svg, but themed.
+export function LogoMark({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 32 32" className={className} aria-hidden>
+      <rect width="32" height="32" rx="8" className="fill-accent" />
+      <path d="M9 15.5l4.6 4.6L23.5 10" fill="none" className="stroke-on-accent" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9.5 24.5h13" fill="none" className="stroke-on-accent" strokeOpacity=".45" strokeWidth="2.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2 text-base font-semibold tracking-[-0.01em] text-ink">
-      <span className="grid size-6 place-items-center rounded-[6px] bg-accent" aria-hidden>
-        <svg viewBox="0 0 12 12" className="size-3 text-on-accent">
-          <path d="M2 6.5 5 9l5-6" fill="none" stroke="currentColor" strokeWidth="2" />
-        </svg>
-      </span>
+      <LogoMark className="size-6" />
       ApplyReady
     </Link>
   );

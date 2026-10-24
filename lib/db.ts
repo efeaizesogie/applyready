@@ -204,6 +204,16 @@ export async function stampApplication(id: string, fields: { last_reminder_at?: 
   if (error) throw new Error(error.message);
 }
 
+/** On sign-in: adopt applications saved under this email that no account owns yet. */
+export async function attachApplicationsByEmail(userId: string, email: string) {
+  const { error } = await createAdminClient()
+    .from("applications")
+    .update({ user_id: userId, reminders_enabled: true })
+    .eq("email", email.toLowerCase())
+    .is("user_id", null);
+  if (error) throw new Error(error.message);
+}
+
 /** Checklist items go with it (on delete cascade). */
 export async function deleteApplication(id: string) {
   const { error } = await createAdminClient().from("applications").delete().eq("id", id);

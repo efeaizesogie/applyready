@@ -2,6 +2,7 @@ import Link from "next/link";
 import { differenceInCalendarDays, parseISO } from "date-fns";
 import type { Application } from "@/lib/db";
 import { PasteBox } from "@/components/landing/PasteBox";
+import { SignOutButton } from "@/components/SignOutButton";
 
 type Props = { currentId: string; applications: Application[] | null; today: string };
 
@@ -47,14 +48,16 @@ export function Sidebar({ currentId, applications, today }: Props) {
               })}
             </ul>
           ) : (
-            <p className="text-[13px] leading-snug text-muted">
-              Turn on reminders with your email to keep all your applications here.{" "}
-              <Link href="/applications" className="text-ink underline decoration-line underline-offset-2 hover:decoration-muted">
-                Already did?
-              </Link>
+            <p className="px-2.5 text-[13px] text-faint">
+              <Link href="/applications" className="hover:text-ink">
+                Sign in
+              </Link>{" "}
+              to see them.
             </p>
           )}
         </div>
+
+        {applications && <SignOutButton />}
       </div>
     </aside>
   );

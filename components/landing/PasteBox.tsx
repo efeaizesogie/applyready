@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ScanProgress, type Stage } from "@/components/scan/ScanProgress";
 
@@ -15,8 +15,14 @@ export function PasteBox({ compact = false }: { compact?: boolean }) {
   const [notice, setNotice] = useState<{ tone: "warn" | "crit"; title: string; body?: string } | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => () => {
-    if (timer.current) clearInterval(timer.current);
+  // Next 16 hides pages with <Activity> instead of unmounting them, so this box would otherwise
+  // still show a finished scan when you come back. The cleanup runs synchronously as the page hides.
+  useLayoutEffect(() => {
+    return () => {
+      if (timer.current) clearInterval(timer.current);
+      setStages(null);
+      setNotice(null);
+    };
   }, []);
 
   const isUrl = URL_ONLY.test(input.trim());
@@ -94,8 +100,10 @@ export function PasteBox({ compact = false }: { compact?: boolean }) {
     }
 
     if (timer.current) clearInterval(timer.current);
-    setStages((all) => all?.map((s) => ({ ...s, state: "done" })) ?? null);
+    // Clear the text in the handler (Next's recommended pattern for create-then-navigate); the progress
+    // panel stays visible until the page hides, then the layout-effect cleanup clears it.
     router.push(`/a/${data.id}`);
+    setInput("");
   }
 
   const busy = stages !== null;

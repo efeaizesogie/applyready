@@ -283,3 +283,14 @@ applyready/
 - LLM model id: pick in build step 1 from Oxion's models page and verify JSON output with a real announcement. If output is weak, switch `LLM_MODEL` or gateway.
 - Tight-deadline handling (compress + warn): carried from `prd.md > Open Questions`, implemented as described in Planner.
 - **Build order for the deadline** (to protect the demo): scan → dashboard → magic link → remind-now email → submit/follow-up → cron → landing polish → URL fetch. If time runs short, URL fetch and the follow-up email are trimmed first; the reminder email never is.
+
+## Post-build revisions (learner feedback before deploy)
+
+### Email delivery: own SMTP with Resend fallback
+`lib/email/send.ts` sends through the learner's own mailbox over SMTP (Nodemailer; e.g. Gmail + app password, ~500/day, any recipient) when `SMTP_HOST` is set, otherwise Resend. Reason: Supabase's built-in auth mailer is rate-limited to a few emails per hour, and Resend without a verified domain only reaches the account owner. Docs: https://nodemailer.com/smtp/ · https://support.google.com/accounts/answer/185833
+
+### Magic links generated server-side
+Replaces `signInWithOtp` + `/auth/callback` in `spec.md > Magic link (Supabase Auth)`. `POST /api/auth/magic-link {email, claim?}` calls `supabase.auth.admin.generateLink({ type: "magiclink" })` (creates the user if needed), emails our own link to `/auth/confirm?token_hash=…&claim=…` via `sendEmail`, with a 60-second per-address cooldown. `/auth/confirm` calls `verifyOtp({ type: "email", token_hash })`, claims the application, then `attachApplicationsByEmail` adopts every unowned application saved under that email. Token-hash links work in any browser (the PKCE flow required the same browser) and are single-use. `/auth/signout` (POST) ends the session.
+
+### Dashboard additions
+Left sidebar (compact New scan + My applications; empty with a sign-in link when signed out; Sign out when signed in), Writing guidance placed in the shorter column by estimated height, and `DELETE /api/applications/[id]` (unclaimed: capability link; claimed: owner session only). Favicon `app/icon.svg` and `LogoMark` share one mark: a ticked item on a list.

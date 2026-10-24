@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { SectionHeader } from "@/components/ui/Tag";
 
 type Props = {
@@ -12,7 +11,7 @@ type Props = {
 
 const AUTH_MESSAGES: Record<string, { tone: "ok" | "crit"; text: string }> = {
   confirmed: { tone: "ok", text: "Email confirmed — daily reminders are on." },
-  "link-failed": { tone: "crit", text: "That link didn't work. Open it in the same browser you requested it from, or send a new one." },
+  "link-failed": { tone: "crit", text: "That link has expired or was already used. Send a new one." },
   "claim-failed": { tone: "crit", text: "This application is already linked to a different email." },
   "missing-code": { tone: "crit", text: "That sign-in link was incomplete. Send a new one." },
 };
@@ -28,13 +27,15 @@ export function ReminderPanel({ applicationId, confirmedEmail, authStatus }: Pro
     e.preventDefault();
     setState("sending");
     setMessage(null);
-    const { error } = await createClient().auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback?claim=${applicationId}` },
-    });
-    if (error) {
+    const res = await fetch("/api/auth/magic-link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, claim: applicationId }),
+    }).catch(() => null);
+    const data = await res?.json().catch(() => null);
+    if (!res?.ok) {
       setState("idle");
-      setMessage({ tone: "crit", text: `Couldn't send the link: ${error.message}` });
+      setMessage({ tone: "crit", text: data?.message ?? "Couldn't send the link — try again." });
     } else {
       setState("sent");
     }
@@ -74,7 +75,7 @@ export function ReminderPanel({ applicationId, confirmedEmail, authStatus }: Pro
           </>
         ) : state === "sent" ? (
           <p className="text-muted">
-            <b className="font-medium text-ink">Check your email.</b> We sent a sign-in link to {email}. Open it in this browser to turn
+            <b className="font-medium text-ink">Check your email.</b> We sent a sign-in link to {email}. Open it on any device to turn
             reminders on.
           </p>
         ) : (

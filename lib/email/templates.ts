@@ -7,14 +7,14 @@ const C = { bg: "#F1EDE5", card: "#FBF9F5", line: "#DDD6CA", ink: "#212227", mut
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-function layout(preheader: string, body: string) {
+function layout(preheader: string, body: string, footer = "You're getting this because you turned on reminders for this application in ApplyReady.") {
   return `<!doctype html><html><body style="margin:0;background:${C.bg};font-family:-apple-system,'Segoe UI',Inter,Arial,sans-serif;color:${C.ink}">
 <span style="display:none;max-height:0;overflow:hidden">${esc(preheader)}</span>
 <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.bg};padding:32px 16px"><tr><td align="center">
 <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
 <tr><td style="padding:0 4px 16px;font-weight:600;font-size:16px">Apply<span style="color:${C.accent}">Ready</span></td></tr>
 <tr><td style="background:${C.card};border:1px solid ${C.line};border-radius:12px;padding:24px">${body}</td></tr>
-<tr><td style="padding:16px 4px;font-size:12px;color:${C.muted}">You're getting this because you turned on reminders for this application in ApplyReady.</td></tr>
+<tr><td style="padding:16px 4px;font-size:12px;color:${C.muted}">${footer}</td></tr>
 </table></td></tr></table></body></html>`;
 }
 
@@ -23,6 +23,22 @@ function button(href: string, label: string) {
 }
 
 const daysText = (n: number) => (n === 0 ? "due today" : `${n} ${n === 1 ? "day" : "days"} left`);
+
+export function magicLinkEmail(link: string) {
+  const subject = "Your ApplyReady sign-in link";
+  const html = layout(
+    "Confirm your email to turn on reminders.",
+    `<h1 style="margin:0 0 8px;font-size:20px;line-height:1.3">Confirm your email</h1>
+<p style="margin:0 0 20px;font-size:14px;color:${C.muted}">Click below to sign in. Your applications will be saved under this email and daily reminders will turn on. The link works once and expires in an hour.</p>
+${button(link, "Sign in to ApplyReady")}`,
+    "If you didn't ask for this, you can ignore it — nothing happens unless the link is clicked.",
+  );
+  const text = `Sign in to ApplyReady (works once, expires in an hour):
+${link}
+
+If you didn't ask for this, ignore this email.`;
+  return { subject, html, text };
+}
 
 export function followUpEmail(app: Application, appUrl: string) {
   const link = `${appUrl}/a/${app.id}`;

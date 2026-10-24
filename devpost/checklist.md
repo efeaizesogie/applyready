@@ -104,3 +104,6 @@ Activity mode:
 - Link fetching refuses private/loopback addresses (DNS-resolved) — the server fetches user-supplied URLs, so without this anyone could make it probe internal networks (SSRF); not in the spec's Page fetcher.
 - Nav moved into the root layout so every page has the logo, My applications and the theme toggle.
 - Learner feedback before deploy: dashboard gained a left sidebar (compact New scan + My applications), a balanced two-column layout (Writing guidance goes in the shorter column based on content), and Delete application with owner check — PRD `My applications` and new `Deleting an application` updated.
+- Magic links are now generated server-side (Supabase admin `generateLink`) and emailed by ApplyReady through the learner's own SMTP (Resend fallback) — the learner hit Supabase's built-in mailer rate limit; this also makes links work across browsers. Signing in adopts every application saved under that email; sign-out added; signed-out sidebar shows no applications.
+- Scan box resets on return to the landing page — Next 16 keeps hidden pages alive with React `<Activity>`, so the finished progress panel persisted; fixed per Next's preserving-UI-state guide (clear input in the submit handler, clear progress in a `useLayoutEffect` cleanup).
+- Logo and favicon added (`app/icon.svg`, `LogoMark`).
