@@ -1,0 +1,5 @@
+Volunteer Data Analyst Fellowship — Open Data Lagos
+We are recruiting volunteer data fellows on a rolling basis. Applications are reviewed as they arrive and the call closes once all 10 places are filled.
+Requirements: a degree in any quantitative field, working knowledge of Excel or Google Sheets, basic SQL or Python is a plus, and 6 hours per week for 3 months.
+To apply, fill in the short online form, upload your CV (one page), and answer one question in under 200 words: "Which public dataset would you like to improve and why?"
+Fellows receive a monthly data stipend, mentorship from senior analysts and a certificate of completion.

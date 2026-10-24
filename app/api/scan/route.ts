@@ -2,8 +2,12 @@ import { format } from "date-fns";
 import { z } from "zod";
 import { extractAnnouncement, ExtractionError } from "@/lib/ai/extract";
 import { buildPlan } from "@/lib/plan";
+import { createApplication } from "@/lib/db";
 
-const Body = z.object({ text: z.string().trim().min(40, "Paste the full announcement text.") });
+const Body = z.object({
+  text: z.string().trim().min(40, "Paste the full announcement text."),
+  sourceUrl: z.string().url().nullish(),
+});
 
 export async function POST(request: Request) {
   const body = Body.safeParse(await request.json().catch(() => null));
@@ -46,5 +50,11 @@ export async function POST(request: Request) {
     );
   }
 
-  return Response.json({ today, extraction, plan });
+  try {
+    const id = await createApplication(extraction, plan, body.data.sourceUrl ?? null);
+    return Response.json({ id });
+  } catch (err) {
+    console.error("[scan] save failed", err);
+    return Response.json({ error: "save_failed", message: "We built your plan but couldn't save it. Try again." }, { status: 500 });
+  }
 }
