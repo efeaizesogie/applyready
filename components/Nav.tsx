@@ -16,7 +16,9 @@ export function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2 text-base font-semibold tracking-[-0.01em] text-ink">
       <LogoMark className="size-6" />
-      ApplyReady
+      <span>
+        Apply<span className="text-accent">Ready</span>
+      </span>
     </Link>
   );
 }
@@ -24,7 +26,7 @@ export function Logo() {
 export function Nav() {
   return (
     <nav className="border-b border-line">
-      <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-2 px-4">
+      <div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-2 px-4">
         <Logo />
         <div className="ml-auto flex items-center gap-1">
           <Link href="/#how-it-works" className="hidden rounded-[6px] px-3 py-1.5 text-[13px] text-muted hover:text-ink sm:block">

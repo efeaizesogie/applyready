@@ -7,12 +7,21 @@ const C = { bg: "#F1EDE5", card: "#FBF9F5", line: "#DDD6CA", ink: "#212227", mut
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
+// The logo mark rebuilt in plain HTML: Gmail and Outlook block SVG, and a hosted image wouldn't load
+// from localhost. A ✓ in an oxblood rounded tile renders everywhere with nothing to download.
+function logo() {
+  return `<table cellpadding="0" cellspacing="0" role="presentation"><tr>
+<td width="26" height="26" align="center" valign="middle" style="width:26px;height:26px;background:${C.accent};border-radius:7px;color:${C.bg};font-size:15px;font-weight:700;line-height:26px;font-family:Arial,sans-serif">&#10003;</td>
+<td style="padding-left:8px;font-weight:600;font-size:16px;color:${C.ink}">Apply<span style="color:${C.accent}">Ready</span></td>
+</tr></table>`;
+}
+
 function layout(preheader: string, body: string, footer = "You're getting this because you turned on reminders for this application in ApplyReady.") {
   return `<!doctype html><html><body style="margin:0;background:${C.bg};font-family:-apple-system,'Segoe UI',Inter,Arial,sans-serif;color:${C.ink}">
 <span style="display:none;max-height:0;overflow:hidden">${esc(preheader)}</span>
 <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.bg};padding:32px 16px"><tr><td align="center">
 <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px">
-<tr><td style="padding:0 4px 16px;font-weight:600;font-size:16px">Apply<span style="color:${C.accent}">Ready</span></td></tr>
+<tr><td style="padding:0 4px 16px">${logo()}</td></tr>
 <tr><td style="background:${C.card};border:1px solid ${C.line};border-radius:12px;padding:24px">${body}</td></tr>
 <tr><td style="padding:16px 4px;font-size:12px;color:${C.muted}">${footer}</td></tr>
 </table></td></tr></table></body></html>`;
