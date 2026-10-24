@@ -4,18 +4,21 @@ import { format } from "date-fns";
 import { getApplication } from "@/lib/db";
 import { Dashboard } from "@/components/dashboard/Dashboard";
 
-async function ApplicationDashboard({ params }: { params: PageProps<"/a/[id]">["params"] }) {
-  const { id } = await params;
+type Props = PageProps<"/a/[id]">;
+
+async function ApplicationDashboard({ params, searchParams }: Pick<Props, "params" | "searchParams">) {
+  const [{ id }, query] = await Promise.all([params, searchParams]);
   const app = await getApplication(id);
   if (!app) notFound();
-  return <Dashboard app={app} today={format(new Date(), "yyyy-MM-dd")} />;
+  const auth = typeof query.auth === "string" ? query.auth : null;
+  return <Dashboard app={app} today={format(new Date(), "yyyy-MM-dd")} authStatus={auth} />;
 }
 
-export default function ApplicationPage({ params }: PageProps<"/a/[id]">) {
+export default function ApplicationPage({ params, searchParams }: Props) {
   return (
     <main className="flex-1">
       <Suspense fallback={<p className="mx-auto w-full max-w-5xl px-4 py-8 text-sm text-muted">Loading your application…</p>}>
-        <ApplicationDashboard params={params} />
+        <ApplicationDashboard params={params} searchParams={searchParams} />
       </Suspense>
     </main>
   );

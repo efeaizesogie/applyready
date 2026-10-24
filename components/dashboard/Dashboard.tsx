@@ -1,6 +1,7 @@
 import { differenceInCalendarDays, format, parseISO } from "date-fns";
 import type { Application } from "@/lib/db";
 import { Checklist } from "./Checklist";
+import { ReminderPanel } from "./ReminderPanel";
 import { Chip, ImportanceTag, SectionHeader } from "@/components/ui/Tag";
 
 const TYPE_LABEL: Record<Application["type"], string> = {
@@ -11,7 +12,13 @@ const TYPE_LABEL: Record<Application["type"], string> = {
   other: "Application",
 };
 
-export function Dashboard({ app, today }: { app: Application; today: string }) {
+// The dashboard URL can be opened by anyone holding it, so never show the full address.
+function maskEmail(email: string) {
+  const [user, domain] = email.split("@");
+  return `${user.slice(0, 1)}•••@${domain}`;
+}
+
+export function Dashboard({ app, today, authStatus }: { app: Application; today: string; authStatus: string | null }) {
   const daysLeft = app.deadline ? differenceInCalendarDays(parseISO(app.deadline), parseISO(today)) : null;
 
   return (
@@ -62,6 +69,12 @@ export function Dashboard({ app, today }: { app: Application; today: string }) {
         </div>
 
         <div className="space-y-4 lg:mt-5">
+          <ReminderPanel
+            applicationId={app.id}
+            confirmedEmail={app.remindersEnabled && app.email ? maskEmail(app.email) : null}
+            authStatus={authStatus}
+          />
+
           <section className="rounded-[12px] border border-line bg-surface">
             <SectionHeader title="Key details" count={app.keyDetails.length} />
             <ul>

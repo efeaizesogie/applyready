@@ -151,6 +151,19 @@ export async function getApplication(id: string): Promise<Application | null> {
   return data ? toApplication(data as ApplicationRow) : null;
 }
 
+/** Attaches an application to a confirmed email and turns reminders on. Won't steal one another user already owns. */
+export async function claimApplication(id: string, userId: string, email: string) {
+  const { data, error } = await createAdminClient()
+    .from("applications")
+    .update({ user_id: userId, email, reminders_enabled: true })
+    .eq("id", id)
+    .or(`user_id.is.null,user_id.eq.${userId}`)
+    .select("id")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data !== null;
+}
+
 export async function setItemDone(itemId: string, done: boolean) {
   if (!isUuid(itemId)) return null;
   const { data, error } = await createAdminClient()
