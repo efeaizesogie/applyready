@@ -71,7 +71,7 @@ Build mode: fast
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 2 (dashboard look and plan quality, while there's time to change both)
+- [x] Early usable behavior explored — after slice 2 (dashboard look and plan quality, while there's time to change both). Feedback: section headings needed more visual hierarchy than body text → added SectionHeader with counts, stronger item titles, label/value key details (`2a7ee30`); learner confirmed it looks right.
 - [ ] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
