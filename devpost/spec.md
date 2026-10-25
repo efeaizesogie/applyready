@@ -62,7 +62,7 @@ PRD ref: `prd.md > The Core Journey`.
 - **Demo recording:** use the deployed URL. Scan a real announcement → dashboard → enter email → confirm magic link → tick items → **Send today's reminder now** → open the email in your inbox → click back.
 - **No custom domain yet:** Resend's test sender (`onboarding@resend.dev`) only delivers to the Resend account owner's own email. That's fine for the demo (use your own inbox). Before friends can get reminders, verify a domain in Resend. Supabase's built-in auth emails go to anyone, but are rate-limited (a few per hour), which is fine for a demo.
 - Submission still needs the demo video + public GitHub repo; the deploy is a bonus.
-- **Shared at:** public repo https://github.com/efeaizesogie/applyready (MIT) · live app https://applyready-gamma.vercel.app · demo video: _pending_.
+- **Shared at:** public repo https://github.com/efeaizesogie/applyready (MIT) · live app https://applyready-gamma.vercel.app · demo video https://vimeo.com/1239276173.
 
 ## Look and Feel
 From `prd.md > Look and Feel`; visual reference `devpost/style-preview.html` (palette D).
