@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="base.css">
+</head>
+<body>
+<script type="module">
+  // ?scene=<name>&p=<base64 JSON params>. The renderer calls window.seek(t) before each frame.
+  const q = new URLSearchParams(location.search);
+  const params = q.get("p") ? JSON.parse(decodeURIComponent(escape(atob(q.get("p"))))) : {};
+  const { default: build } = await import(`./scenes/${q.get("scene")}.js`);
+  document.body.innerHTML = build(params);
+  await document.fonts.ready;
+  window.seek = (t) => {
+    for (const anim of document.getAnimations()) { anim.pause(); anim.currentTime = t * 1000; }
+  };
+  window.seek(0);
+  window.ready = true;
+</script>
+</body>
+</html>
